@@ -1,0 +1,2993 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>CGPA Portal — Bahri University</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600;700&family=Noto+Kufi+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root{
+  --bg:#eef2f7;--surface:#fff;--surface2:#f8fafd;
+  --sb:#0d2240;--text:#1a2332;--muted:#6b7a99;--faint:#b0bcd4;
+  --border:#e2e8f0;--border2:#d0dae9;
+  --primary:#1a6fc4;--pb:rgba(26,111,196,.08);
+  --gold:#d4900e;--gb:rgba(212,144,14,.10);
+  --ok:#10b981;--ob:rgba(16,185,129,.10);
+  --danger:#ef4444;--db:rgba(239,68,68,.10);
+  --warn:#f59e0b;
+  --sh:0 2px 12px rgba(0,0,0,.06);--sh-md:0 6px 28px rgba(0,0,0,.11);
+  --r:12px;--rs:8px;--mob-top:56px;--mob-bot:64px;
+  --font-main:'DM Sans',sans-serif;
+}
+[data-theme="dark"]{
+  --bg:#0f172a;--surface:#1a2538;--surface2:#1e2d42;
+  --sb:#08101e;--text:#dde4f0;--muted:#7d91b0;--faint:#3d506e;
+  --border:#253349;--border2:#1f2e44;
+  --pb:rgba(26,111,196,.14);--gb:rgba(212,144,14,.12);--ob:rgba(16,185,129,.12);--db:rgba(239,68,68,.12);
+  --sh:0 2px 12px rgba(0,0,0,.3);--sh-md:0 6px 28px rgba(0,0,0,.5);
+}
+[dir="rtl"]{--font-main:'Noto Kufi Arabic','DM Sans',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-main);background:var(--bg);color:var(--text);display:flex;height:100vh;overflow:hidden}
+input,select,button,textarea{font-family:var(--font-main)}
+
+/* WELCOME SCREEN */
+#welcome-screen{position:fixed;inset:0;background:linear-gradient(145deg,#060e1a,#0d2240 55%,#0a2a4a);display:flex;align-items:center;justify-content:center;z-index:1100;padding:20px}
+.welcome-wrap{width:100%;max-width:460px;text-align:center}
+.welcome-logo{margin-bottom:30px;color:#fff}
+.welcome-logo .icon{font-size:56px;display:block;margin-bottom:14px;filter:drop-shadow(0 4px 18px rgba(212,144,14,.5))}
+.welcome-logo h1{font-family:'Playfair Display',serif;font-size:28px;letter-spacing:.5px}
+[dir="rtl"] .welcome-logo h1{font-family:'Noto Kufi Arabic',serif}
+.welcome-logo p{opacity:.45;font-size:11.5px;margin-top:6px;letter-spacing:1.2px;text-transform:uppercase}
+.welcome-btns{display:flex;flex-direction:column;gap:12px;margin-top:28px}
+.btn-welcome{padding:15px 24px;border-radius:12px;border:none;cursor:pointer;font-size:15px;font-weight:700;transition:.2s;letter-spacing:.3px;display:flex;align-items:center;justify-content:center;gap:10px;font-family:var(--font-main)}
+.btn-welcome:hover{transform:translateY(-2px)}
+.btn-w-signin{background:linear-gradient(135deg,#1a6fc4,#1254a0);color:#fff;box-shadow:0 7px 22px rgba(26,111,196,.35)}
+.btn-w-register{background:rgba(255,255,255,.1);color:#fff;border:1.5px solid rgba(255,255,255,.2)}
+.btn-w-register:hover{background:rgba(255,255,255,.17)}
+.btn-w-guest{background:rgba(212,144,14,.15);color:#e8a020;border:1.5px solid rgba(212,144,14,.3)}
+.btn-w-guest:hover{background:rgba(212,144,14,.25)}
+.welcome-footer{display:flex;justify-content:center;gap:10px;margin-top:24px}
+.wf-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.7);padding:8px 14px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;transition:.15s;font-family:var(--font-main)}
+.wf-btn:hover{background:rgba(255,255,255,.15);color:#fff}
+.guest-note{text-align:center;margin-top:14px;font-size:11.5px;color:rgba(255,255,255,.35)}
+
+/* AUTH SCREEN */
+#auth-screen{position:fixed;inset:0;background:linear-gradient(145deg,#060e1a,#0d2240 55%,#0a2a4a);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px}
+.auth-wrap{width:100%;max-width:410px}
+.auth-back{display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.5);cursor:pointer;font-size:13px;margin-bottom:16px;transition:.15s;background:none;border:none;font-family:var(--font-main)}
+.auth-back:hover{color:#fff}
+.auth-logo{text-align:center;margin-bottom:26px;color:#fff}
+.auth-logo .icon{font-size:44px;display:block;margin-bottom:10px;filter:drop-shadow(0 4px 14px rgba(212,144,14,.45))}
+.auth-logo h1{font-family:'Playfair Display',serif;font-size:24px;letter-spacing:.4px}
+[dir="rtl"] .auth-logo h1{font-family:'Noto Kufi Arabic',serif}
+.auth-logo p{opacity:.45;font-size:11px;margin-top:5px;letter-spacing:1.2px;text-transform:uppercase}
+.auth-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 28px 70px rgba(0,0,0,.5)}
+[data-theme="dark"] .auth-card{background:#1a2538}
+.auth-tabs{display:flex;border-bottom:1px solid var(--border)}
+.auth-tab{flex:1;padding:15px;text-align:center;cursor:pointer;font-weight:600;font-size:14px;color:var(--muted);transition:.2s;border-bottom:3px solid transparent}
+.auth-tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+.auth-form{padding:26px;display:none}
+.auth-form.active{display:block}
+.fld{margin-bottom:13px}
+.fld label{display:block;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px}
+.fld input{width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:var(--rs);font-size:14px;color:var(--text);background:var(--surface);transition:border-color .2s}
+.fld input:focus{outline:none;border-color:var(--primary)}
+.btn-auth{width:100%;padding:13px;background:linear-gradient(135deg,#1a6fc4,#1254a0);color:#fff;border:none;border-radius:var(--rs);font-size:15px;font-weight:700;cursor:pointer;margin-top:4px;transition:.2s;letter-spacing:.3px;font-family:var(--font-main)}
+.btn-auth:hover{transform:translateY(-1px);box-shadow:0 7px 22px rgba(26,111,196,.38)}
+.auth-err{background:#fef2f2;color:#dc2626;border:1px solid #fecaca;border-radius:var(--rs);padding:9px 13px;font-size:13px;margin-bottom:12px;display:none}
+.auth-err.show{display:block}
+.auth-link{text-align:center;margin-top:13px;font-size:13px;color:var(--primary);cursor:pointer;font-weight:500}
+.auth-link:hover{text-decoration:underline}
+.auth-footer{display:flex;justify-content:center;gap:10px;margin-top:18px}
+
+/* GUEST BANNER */
+.guest-banner{display:none;background:linear-gradient(90deg,#f59e0b,#d97706);color:#fff;padding:10px 16px;text-align:center;font-size:13px;font-weight:600;position:fixed;top:0;left:0;right:0;z-index:160;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}
+.guest-banner.show{display:flex}
+.guest-banner button{background:rgba(255,255,255,.25);color:#fff;border:none;padding:5px 14px;border-radius:6px;cursor:pointer;font-weight:700;font-size:12px;font-family:var(--font-main)}
+.guest-banner button:hover{background:rgba(255,255,255,.4)}
+
+/* إعدادات الجوال: نقل الشريط البرتقالي للأسفل لتجنب تشويه الواجهة العلوية */
+@media(max-width: 768px) {
+  body.has-guest-banner .mob-top { top: 0 !important; }
+  body.has-guest-banner .guest-banner { top: auto !important; bottom: var(--mob-bot) !important; box-shadow: 0 -4px 15px rgba(0,0,0,0.15); }
+  body.has-guest-banner .main-content { padding-top: var(--mob-top) !important; padding-bottom: calc(var(--mob-bot) + 110px) !important; }
+}
+
+/* إعدادات شاشات الكمبيوتر: إبقاء الشريط في الأعلى بشكل طبيعي */
+@media(min-width: 769px) {
+  body.has-guest-banner .guest-banner { top: 0 !important; }
+  body.has-guest-banner .mob-top { top: 42px !important; }
+  body.has-guest-banner .main-content { padding-top: 42px !important; }
+  body.has-guest-banner .sidebar { padding-top: 42px; }
+}
+
+/* SIDEBAR */
+.sidebar{width:255px;min-width:255px;background:var(--sb);display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;z-index:50}
+.sb-logo{padding:20px 18px 14px;border-bottom:1px solid rgba(255,255,255,.07)}
+.app-name{font-family:'Playfair Display',serif;color:#fff;font-size:16px}
+[dir="rtl"] .app-name{font-family:'Noto Kufi Arabic',serif}
+.app-sub{color:rgba(255,255,255,.32);font-size:10px;letter-spacing:1.1px;text-transform:uppercase;margin-top:2px}
+.user-card{margin:12px 12px 4px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:13px}
+.u-name{color:#fff;font-weight:700;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.u-id{color:rgba(255,255,255,.38);font-size:11px;margin-top:2px}
+.cgpa-mini{margin-top:9px;display:flex;align-items:baseline;gap:7px}
+.cgpa-big{font-size:24px;font-weight:700;color:#e8a020;font-family:'Playfair Display',serif;line-height:1}
+.standing-sm{font-size:11px;color:rgba(255,255,255,.45);line-height:1.4}
+.save-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--faint);margin-right:5px;transition:.3s;vertical-align:middle}
+[dir="rtl"] .save-dot{margin-right:0;margin-left:5px}
+.save-dot.saving{background:var(--warn);animation:pulse .8s infinite}
+.save-dot.saved{background:var(--ok)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.nav-sec{padding:5px 0}
+.nav-lbl{padding:9px 18px 2px;font-size:9px;text-transform:uppercase;letter-spacing:1.2px;color:rgba(255,255,255,.22);font-weight:700}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 18px;cursor:pointer;color:rgba(255,255,255,.7);font-size:13px;font-weight:500;transition:.15s;border-right:3px solid transparent}
+[dir="rtl"] .nav-item{border-right:none;border-left:3px solid transparent}
+.nav-item:hover{background:rgba(255,255,255,.06);color:#fff}
+.nav-item.active{background:rgba(255,255,255,.10);color:#fff;border-right-color:#e8a020}
+[dir="rtl"] .nav-item.active{border-right-color:transparent;border-left-color:#e8a020}
+.nav-ico{font-size:14px;width:18px;text-align:center;flex-shrink:0}
+.nav-badge{margin-left:auto;background:rgba(232,160,32,.18);color:#e8a020;font-size:9px;padding:2px 7px;border-radius:10px;font-weight:800;flex-shrink:0}
+[dir="rtl"] .nav-badge{margin-left:0;margin-right:auto}
+.yr-hint{margin-left:auto;font-size:11px;color:rgba(255,255,255,.35);flex-shrink:0}
+[dir="rtl"] .yr-hint{margin-left:0;margin-right:auto}
+.sb-footer{margin-top:auto;padding:12px;border-top:1px solid rgba(255,255,255,.07);display:flex;gap:8px;flex-wrap:wrap}
+.sb-footer button{flex:1;padding:9px 4px;border:none;border-radius:var(--rs);cursor:pointer;font-size:11.5px;font-weight:700;transition:.15s;min-width:45px;font-family:var(--font-main)}
+.btn-theme{background:rgba(255,255,255,.08);color:rgba(255,255,255,.7)}
+.btn-theme:hover{background:rgba(255,255,255,.13)}
+.btn-lang{background:rgba(26,111,196,.2);color:rgba(140,190,255,.9)}
+.btn-lang:hover{background:rgba(26,111,196,.35)}
+.btn-logout{background:rgba(239,68,68,.16);color:#fca5a5}
+.btn-logout:hover{background:rgba(239,68,68,.28)}
+
+/* MOBILE SIDEBAR */
+.sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;backdrop-filter:blur(3px)}
+.sb-overlay.open{display:block}
+@media(max-width:768px){
+  .sidebar{position:fixed;left:-260px;top:0;bottom:0;z-index:300;transition:left .28s cubic-bezier(.4,0,.2,1)}
+  .sidebar.open{left:0}
+  [dir="rtl"] .sidebar{left:auto;right:-260px;transition:right .28s cubic-bezier(.4,0,.2,1)}
+  [dir="rtl"] .sidebar.open{right:0}
+  .sb-footer{display:none}
+}
+
+/* MOBILE TOP BAR */
+.mob-top{display:none;position:fixed;top:0;left:0;right:0;height:var(--mob-top);background:var(--sb);z-index:150;align-items:center;padding:0 10px;gap:8px;box-shadow:0 2px 12px rgba(0,0,0,.3)}
+.mob-top .logo-sm{font-family:'Playfair Display',serif;color:#fff;font-size:14px;flex:1;white-space:nowrap;overflow:hidden}
+.mob-top .cgpa-chip{background:rgba(232,160,32,.18);color:#e8a020;font-size:11.5px;font-weight:800;padding:4px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.hamburger{background:none;border:none;cursor:pointer;padding:6px;display:flex;flex-direction:column;gap:4px;flex-shrink:0}
+.hamburger span{display:block;width:20px;height:2px;background:rgba(255,255,255,.75);border-radius:2px}
+.mob-icon-btn{background:rgba(255,255,255,.09);border:none;cursor:pointer;width:34px;height:34px;border-radius:8px;font-size:15px;color:rgba(255,255,255,.8);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.mob-icon-btn:hover{background:rgba(255,255,255,.16)}
+@media(max-width:768px){.mob-top{display:flex}}
+
+/* MOBILE BOTTOM NAV */
+.mob-bot-nav{display:none;position:fixed;bottom:0;left:0;right:0;height:var(--mob-bot);background:var(--surface);border-top:1px solid var(--border);z-index:150;align-items:stretch;box-shadow:0 -3px 16px rgba(0,0,0,.07)}
+.mob-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;color:var(--muted);font-size:9.5px;font-weight:700;transition:.15s;padding:6px 0 calc(6px + env(safe-area-inset-bottom));border:none;background:none;text-transform:uppercase;letter-spacing:.4px;font-family:var(--font-main)}
+.mob-tab .mico{font-size:18px;line-height:1}
+.mob-tab.active{color:var(--primary)}
+@media(max-width:768px){.mob-bot-nav{display:flex}}
+/* YEAR SHEET */
+#yr-sheet{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:400;align-items:flex-end;backdrop-filter:blur(2px)}
+#yr-sheet.open{display:flex}
+.yr-sheet-in{width:100%;background:var(--surface);border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));animation:slideUp .22s ease}
+@keyframes slideUp{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
+.yr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.yr-btn{background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r);padding:14px 8px;text-align:center;cursor:pointer;transition:.15s;font-family:var(--font-main)}
+.yr-btn:active{transform:scale(.96)}
+.yr-btn .yn{font-family:'Playfair Display',serif;font-size:22px;color:var(--primary);display:block;line-height:1}
+.yr-btn .yw{font-size:10px;font-weight:800;color:var(--gold);margin:3px 0 2px;display:block}
+.yr-btn .yg{font-size:12px;color:var(--muted);display:block}
+.yr-sheet-close{width:100%;margin-top:12px;padding:13px;background:var(--bg);border:none;border-radius:var(--rs);font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;font-family:var(--font-main)}
+
+/* IMPORT SHEET */
+#imp-sheet{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;align-items:flex-end;backdrop-filter:blur(3px)}
+#imp-sheet.open{display:flex}
+.imp-in{width:100%;background:var(--surface);border-radius:20px 20px 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom));max-height:85vh;overflow-y:auto;animation:slideUp .22s ease}
+.imp-title{font-family:'Playfair Display',serif;font-size:18px;margin-bottom:6px}
+.imp-sub{font-size:12.5px;color:var(--muted);margin-bottom:14px;line-height:1.6}
+.imp-format{background:var(--gb);border:1px solid var(--gold);border-radius:var(--rs);padding:12px 14px;font-size:12px;color:var(--text);font-family:'Courier New',monospace;line-height:1.9;margin-bottom:14px}
+.imp-ta{width:100%;min-height:140px;padding:12px;border:1.5px solid var(--border);border-radius:var(--rs);font-size:13.5px;background:var(--surface2);color:var(--text);resize:vertical;line-height:1.7;font-family:var(--font-main)}
+.imp-ta:focus{outline:none;border-color:var(--primary)}
+.imp-preview{background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:12px;margin-top:12px;max-height:180px;overflow-y:auto}
+.imp-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:13px}
+.imp-row:last-child{border-bottom:none}
+.imp-actions{display:flex;gap:10px;margin-top:14px}
+.btn-imp{flex:1;padding:12px;border:none;border-radius:var(--rs);cursor:pointer;font-size:14px;font-weight:700;font-family:var(--font-main)}
+.btn-imp-ok{background:linear-gradient(135deg,var(--primary),#1254a0);color:#fff}
+.btn-imp-cancel{background:var(--bg);color:var(--muted);border:1px solid var(--border)}
+
+/* SCREENSHOT MODAL */
+#snap-modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:650;display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px)}
+#snap-modal.open{display:flex}
+.snap-box{background:var(--surface);border-radius:16px;max-width:440px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:var(--sh-md);padding:24px}
+.snap-box h3{font-family:'Playfair Display',serif;font-size:17px;margin-bottom:14px}
+.snap-checks{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.snap-check{display:flex;align-items:center;gap:9px;padding:10px 12px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--rs);cursor:pointer;font-size:13px;font-weight:600;transition:.15s;user-select:none}
+.snap-check input{accent-color:var(--primary);width:15px;height:15px}
+.snap-check.checked{border-color:var(--primary);background:var(--pb)}
+.snap-acts{display:flex;gap:10px}
+.snap-acts button{flex:1;padding:12px;border:none;border-radius:var(--rs);cursor:pointer;font-weight:700;font-size:14px;font-family:var(--font-main)}
+
+/* MAIN CONTENT */
+.main-content{flex:1;overflow-y:auto;background:var(--bg)}
+.ci{padding:28px 28px 40px;max-width:1060px}
+@media(max-width:768px){
+  .main-content{padding-top:var(--mob-top);padding-bottom:var(--mob-bot)}
+  .ci{padding:14px 12px 22px}
+}
+.view{display:none}
+.view.active{display:block;animation:fadeUp .2s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.ph{margin-bottom:20px}
+.ph h1{font-family:'Playfair Display',serif;font-size:24px;color:var(--text)}
+[dir="rtl"] .ph h1{font-family:'Noto Kufi Arabic',serif}
+.ph p{color:var(--muted);font-size:13px;margin-top:4px;line-height:1.6}
+
+/* CARDS */
+.card{background:var(--surface);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);padding:20px;margin-bottom:16px}
+.card-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:15px;gap:10px;flex-wrap:wrap}
+.card-title{font-family:'Playfair Display',serif;font-size:16px;color:var(--text)}
+[dir="rtl"] .card-title{font-family:'Noto Kufi Arabic',serif}
+.card-sub{font-size:12px;color:var(--muted);margin-top:2px}
+
+/* STATS */
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+@media(max-width:900px){.sg{grid-template-columns:repeat(2,1fr)}}
+.sc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;position:relative;overflow:hidden;box-shadow:var(--sh)}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--scc,var(--primary))}
+.sc-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:6px}
+.sc-val{font-family:'Playfair Display',serif;font-size:26px;color:var(--text);line-height:1}
+.sc-sub{font-size:11.5px;color:var(--muted);margin-top:5px}
+.sc-ico{position:absolute;top:12px;right:12px;font-size:24px;opacity:.09}
+[dir="rtl"] .sc-ico{right:auto;left:12px}
+.prog-bg{background:var(--border);border-radius:4px;height:5px;overflow:hidden;margin-top:6px}
+.prog-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--primary),var(--gold));transition:width .7s ease}
+
+/* PARTIAL CGPA BAR */
+.partial-bar{display:flex;align-items:center;gap:10px;background:var(--gb);border:1px solid var(--gold);border-radius:var(--rs);padding:10px 14px;margin-bottom:14px;font-size:12.5px;flex-wrap:wrap}
+.partial-bar strong{color:var(--gold);font-weight:800}
+
+/* TABLES */
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{background:var(--surface2);color:var(--muted);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:9px 12px;text-align:center;border-bottom:1px solid var(--border)}
+.tbl th:first-child{text-align:left}
+[dir="rtl"] .tbl th:first-child{text-align:right}
+.tbl td{padding:10px 12px;text-align:center;border-bottom:1px solid var(--border)}
+.tbl tbody tr:hover{background:var(--pb)}
+.tbl .cl{text-align:left;font-weight:600}
+[dir="rtl"] .tbl .cl{text-align:right}
+.gv{font-weight:700;color:var(--primary)}.cv{font-weight:800;color:var(--gold)}
+.tbl tfoot td{font-size:14px;padding:11px 12px;border-bottom:none}
+.tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 11px;border-radius:20px;font-size:11.5px;font-weight:700;white-space:nowrap}
+.bd-dist{background:#d1fae5;color:#065f46}.bd-merit{background:#dbeafe;color:#1e3a8a}
+.bd-pass{background:#fef3c7;color:#92400e}.bd-risk{background:#fee2e2;color:#991b1b}
+.bd-none{background:var(--surface2);color:var(--muted)}.bd-partial{background:var(--gb);color:var(--gold)}
+
+/* TWO-COL */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:700px){.two-col{grid-template-columns:1fr}}
+
+/* CHART */
+.chart-wrap{position:relative;height:190px}
+
+/* SEMESTER CARDS */
+.sem-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:700px){.sem-grid{grid-template-columns:1fr}}
+.sem-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px;box-shadow:var(--sh)}
+.sem-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;gap:8px;flex-wrap:wrap}
+.sem-title{font-weight:700;font-size:15px}
+.sem-gpa{background:var(--pb);color:var(--primary);font-size:13px;font-weight:800;padding:4px 12px;border-radius:20px}
+.btn-toggle{background:transparent;border:1px solid var(--border);color:var(--muted);padding:5px 10px;border-radius:6px;cursor:pointer;font-size:11px;font-weight:700;transition:.15s;font-family:var(--font-main)}
+.btn-toggle:hover{border-color:var(--primary);color:var(--primary);background:var(--pb)}
+.course-tbl{width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:8px}
+.course-tbl th{background:var(--surface2);color:var(--muted);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:6px 5px;border-bottom:1px solid var(--border);text-align:center}
+.course-tbl th:first-child{text-align:left}
+[dir="rtl"] .course-tbl th:first-child{text-align:right}
+.course-tbl td{padding:5px 4px;border-bottom:1px solid var(--border);vertical-align:middle;text-align:center}
+.course-tbl input,.course-tbl select{width:100%;padding:5px 6px;border:1px solid var(--border);border-radius:5px;font-size:12px;background:var(--surface2);color:var(--text);text-align:center;transition:border-color .15s;font-family:var(--font-main)}
+.course-tbl input:focus,.course-tbl select:focus{outline:none;border-color:var(--primary);background:var(--surface)}
+.course-tbl td:first-child input{text-align:left}
+[dir="rtl"] .course-tbl td:first-child input{text-align:right}
+.g-A{color:#059669;font-weight:800}.g-Bp{color:#2563eb;font-weight:800}.g-B{color:#7c3aed;font-weight:800}.g-C{color:#d97706;font-weight:800}.g-F{color:#dc2626;font-weight:800}
+.btn-add-c{background:transparent;border:1.5px dashed var(--border);color:var(--muted);width:100%;padding:9px;border-radius:var(--rs);cursor:pointer;font-size:13px;font-weight:700;transition:.18s;display:flex;align-items:center;justify-content:center;gap:6px;font-family:var(--font-main)}
+.btn-add-c:hover{border-color:var(--primary);color:var(--primary);background:var(--pb)}
+.btn-del{background:none;border:none;cursor:pointer;color:var(--faint);font-size:13px;padding:2px 4px;transition:.15s;line-height:1}
+.btn-del:hover{color:var(--danger)}
+
+/* ENTRY MODE */
+.entry-mode-bar{display:flex;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);overflow:hidden;font-size:11.5px;font-weight:700;margin-bottom:14px}
+.em-btn{background:none;border:none;padding:8px 14px;cursor:pointer;color:var(--muted);transition:.15s;font-family:var(--font-main);font-weight:700;white-space:nowrap;flex:1;font-size:11.5px}
+.em-btn.on{background:var(--primary);color:#fff}
+.em-btn:not(.on):hover{background:var(--pb);color:var(--primary)}
+
+/* MANUAL & ANNUAL */
+.manual-box{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:14px;background:var(--gb);border:1.5px dashed var(--gold);border-radius:var(--rs)}
+.manual-box label{font-size:10.5px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.manual-box input{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:14px;background:var(--surface);color:var(--text);font-family:var(--font-main)}
+.manual-box input:focus{outline:none;border-color:var(--primary)}
+.annual-box{padding:16px;background:var(--ob);border:1.5px dashed var(--ok);border-radius:var(--rs);display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.annual-box label{font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.annual-box input{padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--rs);font-size:18px;font-weight:700;font-family:var(--font-main);background:var(--surface);color:var(--text);width:140px;text-align:center}
+.annual-box input:focus{outline:none;border-color:var(--ok)}
+.annual-info{font-size:12px;color:var(--muted);line-height:1.7;flex:1;min-width:180px}
+.import-btn{display:flex;align-items:center;gap:6px;background:var(--pb);border:1px solid var(--primary);color:var(--primary);padding:7px 13px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;transition:.15s;font-family:var(--font-main)}
+.import-btn:hover{background:var(--primary);color:#fff}
+
+/* WHAT-IF */
+.wi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+@media(max-width:600px){.wi-grid{grid-template-columns:repeat(2,1fr)}}
+.wi-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:14px;transition:border-color .2s}
+.wi-card.actual-mode{border-color:var(--ok)}
+.wi-card.custom-mode{border-color:var(--primary);background:var(--pb)}
+.wi-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:5px}
+.wi-label{font-size:12px;font-weight:700}
+.wi-wt{font-size:9.5px;color:var(--gold);font-weight:800;background:var(--gb);padding:2px 7px;border-radius:10px}
+.wi-mode-btns{display:flex;background:var(--surface2);border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.wi-mode-btn{background:none;border:none;padding:4px 9px;cursor:pointer;font-size:10.5px;font-weight:700;color:var(--muted);transition:.15s;font-family:var(--font-main);white-space:nowrap;}
+.wi-mode-btn.on{background:var(--primary);color:#fff}
+.wi-mode-btn:disabled{opacity:.35;cursor:not-allowed}
+.wi-actual-val{font-family:'Playfair Display',serif;font-size:22px;color:var(--ok);line-height:1;margin:4px 0}
+.wi-actual-sub{font-size:11px;color:var(--muted)}
+.wi-input{width:100%;padding:9px 10px;border:1.5px solid var(--primary);border-radius:6px;font-size:16px;font-weight:700;background:var(--surface);color:var(--text);text-align:center;margin-top:4px;font-family:var(--font-main)}
+.wi-input:focus{outline:none;border-color:var(--gold)}
+.wi-result{background:var(--surface);border:2px solid var(--primary);border-radius:var(--r);padding:22px;text-align:center}
+.wi-big{font-family:'Playfair Display',serif;font-size:52px;color:var(--primary);line-height:1}
+.wi-delta{font-size:13px;color:var(--muted);margin-top:8px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+
+/* LEADERBOARD */
+.lb-filters{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+.lb-filter{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;font-size:12px;font-weight:700;transition:.15s;font-family:var(--font-main)}
+.lb-filter:hover{border-color:var(--primary);color:var(--primary)}
+.lb-filter.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.lb-row{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);margin-bottom:7px;transition:.15s;cursor:pointer}
+.lb-row:hover{border-color:var(--primary);box-shadow:var(--sh)}
+.lb-row.me{border-color:var(--gold);background:var(--gb)}
+.lb-rank{font-family:'Playfair Display',serif;font-size:22px;width:38px;text-align:center;flex-shrink:0;color:var(--muted)}
+.lb-rank.r1{color:#d4af37}.lb-rank.r2{color:#a8a9ad}.lb-rank.r3{color:#cd7f32}
+.lb-info{flex:1;min-width:0}
+.lb-name{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb-gpa{font-family:'Playfair Display',serif;font-size:24px;color:var(--primary);font-weight:700;flex-shrink:0}
+.lb-gpa-sub{font-size:10px;color:var(--muted);text-align:right}
+[dir="rtl"] .lb-gpa-sub{text-align:left}
+.lb-empty{text-align:center;padding:48px 20px;color:var(--muted)}
+.lb-search{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--rs);font-size:14px;background:var(--surface);color:var(--text);margin-bottom:12px;font-family:var(--font-main)}
+.lb-search:focus{outline:none;border-color:var(--primary)}
+.lb-my-status{background:var(--gb);border:1.5px solid var(--gold);border-radius:var(--rs);padding:12px 16px;margin-bottom:14px;font-size:13px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.lb-my-status button{background:var(--primary);color:#fff;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-weight:700;font-size:12px;font-family:var(--font-main)}
+
+/* DETAIL MODAL */
+#detail-modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:600;display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px)}
+#detail-modal.open{display:flex}
+.detail-box{background:var(--surface);border-radius:16px;max-width:480px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:var(--sh-md)}
+.detail-hdr{padding:18px 20px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start}
+.detail-body{padding:14px 20px 20px}
+.detail-yr{background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:12px;margin-bottom:8px}
+.btn-close{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:5px 12px;cursor:pointer;font-size:12px;font-weight:700;color:var(--muted);font-family:var(--font-main)}
+
+/* SHARING */
+.share-section{background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r);padding:18px;margin-top:16px}
+.toggle-row{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:12px;flex-wrap:wrap}
+.toggle-row>div{flex:1;min-width:180px}
+.toggle-label{font-weight:700;font-size:13.5px}
+.toggle-desc{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.4}
+.switch{position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0}
+.switch input{opacity:0;width:0;height:0}
+.slider{position:absolute;inset:0;background:var(--border2);border-radius:24px;cursor:pointer;transition:.25s}
+.slider:before{content:'';position:absolute;width:18px;height:18px;background:#fff;border-radius:50%;left:3px;top:3px;transition:.25s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+input:checked+.slider{background:var(--primary)}
+input:checked+.slider:before{transform:translateX(20px)}
+.yr-checks{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:10px 0}
+.yr-check{display:flex;align-items:center;gap:7px;padding:8px 10px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--rs);cursor:pointer;font-size:13px;font-weight:600;transition:.15s;user-select:none}
+.yr-check input{accent-color:var(--primary);width:14px;height:14px}
+.yr-check.checked{border-color:var(--primary);background:var(--pb);color:var(--primary)}
+.btn-share-save{background:linear-gradient(135deg,var(--primary),#1254a0);color:#fff;border:none;padding:11px 22px;border-radius:var(--rs);font-size:14px;font-weight:700;cursor:pointer;margin-top:14px;transition:.15s;font-family:var(--font-main)}
+.btn-share-save:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(26,111,196,.35)}
+
+/* PROFILE */
+.prof-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:700px){.prof-grid{grid-template-columns:1fr}}
+.form-fld{margin-bottom:13px}
+.form-fld label{display:block;font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.form-fld input{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:var(--rs);font-size:14px;background:var(--surface);color:var(--text);transition:border-color .2s;font-family:var(--font-main)}
+.form-fld input:focus{outline:none;border-color:var(--primary)}
+.btn-save{background:linear-gradient(135deg,var(--primary),#1254a0);color:#fff;border:none;padding:11px 22px;border-radius:var(--rs);font-size:14px;font-weight:700;cursor:pointer;transition:.15s;font-family:var(--font-main)}
+.btn-save:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(26,111,196,.35)}
+.btn-dng{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;border:none;padding:11px 22px;border-radius:var(--rs);font-size:14px;font-weight:700;cursor:pointer;transition:.15s;font-family:var(--font-main)}
+.btn-dng:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(239,68,68,.35)}
+.backup-btns{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap}
+.backup-btns button{padding:10px 18px;border-radius:var(--rs);border:none;cursor:pointer;font-size:13px;font-weight:700;transition:.15s;display:flex;align-items:center;gap:7px;font-family:var(--font-main)}
+
+/* GUIDE */
+.guide-tbl{width:100%;border-collapse:collapse}
+.guide-tbl th{background:var(--sb);color:rgba(255,255,255,.82);padding:9px 13px;font-size:11.5px;text-align:center}
+.guide-tbl td{padding:10px 13px;text-align:center;border-bottom:1px solid var(--border);font-weight:600}
+.guide-tbl tbody tr:hover{background:var(--pb)}
+.formula-box{background:var(--surface2);padding:16px;border-radius:var(--rs);font-size:13px;color:var(--text);line-height:2.2;font-family:'Courier New',monospace;border:1px solid var(--border)}
+
+/* TOAST */
+#toast-cnt{position:fixed;bottom:calc(22px + var(--mob-bot));right:14px;z-index:9999;display:flex;flex-direction:column;gap:7px;pointer-events:none}
+[dir="rtl"] #toast-cnt{right:auto;left:14px}
+@media(min-width:769px){#toast-cnt{bottom:22px}}
+.toast{padding:10px 16px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:var(--sh-md);opacity:0;transform:translateX(16px);transition:.22s;max-width:270px;pointer-events:auto}
+[dir="rtl"] .toast{transform:translateX(-16px)}
+.toast.show{opacity:1;transform:translateX(0)}
+.t-ok{background:#d1fae5;color:#065f46;border:1px solid #6ee7b7}
+.t-err{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+.t-inf{background:#dbeafe;color:#1e3a8a;border:1px solid #93c5fd}
+
+/* CONFIRM */
+#conf-modal{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);z-index:700;display:none;align-items:center;justify-content:center;padding:16px}
+#conf-modal.open{display:flex}
+.conf-box{background:var(--surface);border-radius:14px;padding:24px;max-width:330px;width:100%;box-shadow:var(--sh-md)}
+.conf-box h3{font-family:'Playfair Display',serif;font-size:17px;margin-bottom:7px}
+.conf-box p{font-size:13.5px;color:var(--muted);margin-bottom:18px;line-height:1.6}
+.conf-acts{display:flex;gap:9px;justify-content:flex-end}
+.conf-acts button{padding:9px 17px;border-radius:var(--rs);border:none;cursor:pointer;font-weight:700;font-size:13px;font-family:var(--font-main)}
+.conf-cancel{background:var(--bg);color:var(--text);border:1px solid var(--border)}
+.conf-ok{background:var(--danger);color:#fff}
+
+/* LOADING */
+#load-ov{display:none;position:fixed;inset:0;background:rgba(8,16,30,.85);z-index:8000;align-items:center;justify-content:center;flex-direction:column;gap:12px}
+.spin{width:36px;height:36px;border:3px solid rgba(255,255,255,.12);border-top-color:#e8a020;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#load-ov p{color:rgba(255,255,255,.5);font-size:13px}
+
+/* EXPORT */
+.exp-btn{display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border-radius:var(--rs);border:none;cursor:pointer;font-size:13.5px;font-weight:700;transition:.15s;font-family:var(--font-main)}
+.exp-csv{background:var(--ob);color:#065f46;border:1px solid #6ee7b7}
+.exp-csv:hover{background:#a7f3d0;transform:translateY(-1px)}
+
+/* SNAP RENDER (hidden) */
+#snap-render{position:fixed;left:-9999px;top:0;width:600px;background:#fff;padding:30px;font-family:'DM Sans',sans-serif;color:#1a2332;z-index:-1}
+#snap-render .snap-header{text-align:center;margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid #e2e8f0}
+#snap-render .snap-header h2{font-family:'Playfair Display',serif;font-size:22px;color:#0d2240}
+#snap-render .snap-header p{font-size:13px;color:#6b7a99;margin-top:4px}
+#snap-render .snap-stat{display:flex;justify-content:space-around;padding:16px 0;border-bottom:1px solid #e2e8f0;margin-bottom:16px}
+#snap-render .snap-stat div{text-align:center}
+#snap-render .snap-year-block{margin-bottom:14px;padding:14px;background:#f8fafd;border:1px solid #e2e8f0;border-radius:10px}
+#snap-render .watermark{text-align:center;margin-top:18px;font-size:10px;color:#b0bcd4}
+#welcome-screen{overflow-y:auto}
+#auth-screen{overflow-y:auto}
+@media(max-width:420px){
+  .btn-welcome{font-size:13px;padding:12px 16px}
+  .welcome-logo h1{font-size:22px}
+  .welcome-logo .icon{font-size:44px}
+  .welcome-wrap{padding:0 10px}
+  .welcome-footer{gap:6px}
+  .wf-btn{padding:6px 10px;font-size:11px}
+  .auth-wrap{padding:0 6px}
+  .auth-form{padding:18px}
+  .guest-banner{font-size:11px;padding:8px 10px;flex-direction:column;gap:6px}
+}
+</style>
+</head>
+<body>
+
+<div id="toast-cnt"></div>
+<div id="load-ov"><div class="spin"></div><p>Saving...</p></div>
+
+<!-- CONFIRM MODAL -->
+<div id="conf-modal">
+  <div class="conf-box">
+    <h3 id="conf-title">Confirm Action</h3>
+    <p id="conf-txt">Are you sure?</p>
+    <div class="conf-acts">
+      <button class="conf-cancel" onclick="closeConf()">Cancel</button>
+      <button class="conf-ok" id="conf-ok-btn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div id="detail-modal">
+  <div class="detail-box">
+    <div class="detail-hdr">
+      <div>
+        <div id="dm-name" style="font-family:'Playfair Display',serif;font-size:18px"></div>
+        <div id="dm-meta" style="font-size:12px;color:var(--muted);margin-top:3px"></div>
+      </div>
+      <button class="btn-close" onclick="closeDetail()">✕</button>
+    </div>
+    <div class="detail-body" id="dm-body"></div>
+  </div>
+</div>
+
+<!-- YEAR SHEET (mobile) -->
+<div id="yr-sheet">
+  <div class="yr-sheet-in">
+    <div style="font-family:'Playfair Display',serif;font-size:17px" id="yr-sheet-title">Select Year</div>
+    <div class="yr-grid" id="yr-grid-btns"></div>
+    <button class="yr-sheet-close" onclick="closeYrSheet()">✕ Cancel</button>
+  </div>
+</div>
+
+<!-- IMPORT SHEET -->
+<div id="imp-sheet">
+  <div class="imp-in">
+    <div class="imp-title">📋 Import Courses</div>
+    <div class="imp-sub" id="imp-sub-text">Paste your course list below — one course per line.<br>Format: <strong>Course Name, Credit Hours</strong></div>
+    <div class="imp-format">Introduction to Medicine, 3<br>Anatomy and Physiology, 4<br>Clinical Biochemistry, 2<br>Medical Ethics, 1</div>
+    <textarea class="imp-ta" id="imp-ta" placeholder="Paste your courses here..." oninput="parseImport()"></textarea>
+    <div id="imp-preview" style="display:none">
+      <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">
+        Preview (<span id="imp-count">0</span> courses detected)
+      </div>
+      <div class="imp-preview" id="imp-rows"></div>
+    </div>
+    <div class="imp-actions">
+      <button class="btn-imp btn-imp-cancel" onclick="closeImpSheet()">Cancel</button>
+      <button class="btn-imp btn-imp-ok" id="imp-ok-btn" onclick="confirmImport()" disabled style="opacity:.5">
+        Import <span id="imp-ok-count">0</span> Courses
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- SCREENSHOT MODAL -->
+<div id="snap-modal">
+  <div class="snap-box">
+    <h3>📸 Export as Image</h3>
+    <div class="snap-checks" id="snap-checks"></div>
+    <div class="snap-acts">
+      <button onclick="closeSnapModal()" style="background:var(--bg);color:var(--muted);border:1px solid var(--border)">Cancel</button>
+      <button onclick="generateSnapshot()" style="background:linear-gradient(135deg,var(--primary),#1254a0);color:#fff">📸 Generate Image</button>
+    </div>
+  </div>
+</div>
+
+<!-- HIDDEN SNAP RENDER AREA -->
+<div id="snap-render"></div>
+
+<!-- GUEST BANNER -->
+<div class="guest-banner" id="guest-banner">
+  <span>⚠️ <span id="guest-warn-text">Guest Mode — Your data is saved locally only</span></span>
+  <button onclick="guestToAccount()">Create Account & Sync</button>
+  <button onclick="exportBackup()">💾 Download Backup</button>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!--              WELCOME SCREEN               -->
+<!-- ══════════════════════════════════════════ -->
+<div id="welcome-screen">
+  <div class="welcome-wrap">
+    <div class="welcome-logo">
+      <span class="icon">🎓</span>
+      <h1>Bahri University</h1>
+      <p>Official CGPA Portal</p>
+    </div>
+    <div class="welcome-btns">
+      <button class="btn-welcome btn-w-signin" onclick="showAuth('login')">
+        🔑 <span id="w-signin-txt">Sign In</span>
+      </button>
+      <button class="btn-welcome btn-w-register" onclick="showAuth('register')">
+        📝 <span id="w-register-txt">Create Account</span>
+      </button>
+      <button class="btn-welcome btn-w-guest" onclick="enterGuest()">
+        👤 <span id="w-guest-txt">Continue as Guest</span>
+      </button>
+    </div>
+    <div class="guest-note" id="w-guest-note">Guest data is saved locally and won't sync across devices</div>
+    <div class="welcome-footer">
+      <button class="wf-btn" onclick="toggleTheme()">🌙 <span id="w-theme-txt">Theme</span></button>
+      <button class="wf-btn" onclick="toggleLang()">🌐 <span id="lang-btn-w">عربي</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!--               AUTH SCREEN                 -->
+<!-- ══════════════════════════════════════════ -->
+<div id="auth-screen">
+  <div class="auth-wrap">
+    <button class="auth-back" onclick="backToWelcome()">← <span id="auth-back-txt">Back</span></button>
+    <div class="auth-logo">
+      <span class="icon">🎓</span>
+      <h1>Bahri University</h1>
+      <p>Official CGPA Portal</p>
+    </div>
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <div class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Sign In</div>
+        <div class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Create Account</div>
+      </div>
+      <!-- LOGIN -->
+      <div id="form-login" class="auth-form active">
+        <div class="auth-err" id="err-login"></div>
+        <div class="fld">
+          <label id="lbl-l-email">Email</label>
+          <input type="email" id="l-email" placeholder="student@bahri.edu" onkeydown="if(event.key==='Enter')login()">
+        </div>
+        <div class="fld">
+          <label id="lbl-l-pass">Password</label>
+          <input type="password" id="l-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()">
+        </div>
+        <button class="btn-auth" onclick="login()" id="btn-login-txt">Sign In →</button>
+        <p class="auth-link" onclick="resetPw()" id="forgot-pw-txt">Forgot password?</p>
+      </div>
+      <!-- REGISTER -->
+      <div id="form-register" class="auth-form">
+        <div class="auth-err" id="err-reg"></div>
+        <div class="fld">
+          <label id="lbl-r-name">Full Name</label>
+          <input type="text" id="r-name" placeholder="Your full name">
+        </div>
+        <div class="fld">
+          <label id="lbl-r-id">University ID</label>
+          <input type="text" id="r-id" placeholder="Student ID">
+        </div>
+        <div class="fld">
+          <label id="lbl-r-email">Email</label>
+          <input type="email" id="r-email" placeholder="student@bahri.edu">
+        </div>
+        <div class="fld">
+          <label id="lbl-r-pass">Password (min. 6 chars)</label>
+          <input type="password" id="r-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')signup()">
+        </div>
+        <button class="btn-auth" onclick="signup()" id="btn-signup-txt">Create Account →</button>
+      </div>
+    </div>
+    <div class="auth-footer">
+      <button class="wf-btn" onclick="toggleTheme()">🌙 <span id="a-theme-txt">Theme</span></button>
+      <button class="wf-btn" onclick="toggleLang()">🌐 <span id="lang-btn-a">عربي</span></button>
+    </div>
+  </div>
+</div>
+<!-- ══════════════════════════════════════════ -->
+<!--                MAIN APP                   -->
+<!-- ══════════════════════════════════════════ -->
+<div id="app" style="display:none;width:100%;height:100%;flex:1">
+
+  <!-- Mobile Top Bar -->
+  <div class="mob-top">
+    <button class="hamburger" onclick="toggleSB()" aria-label="Menu"><span></span><span></span><span></span></button>
+    <span class="logo-sm">🎓 Bahri University</span>
+    <button class="mob-icon-btn" onclick="toggleLang()" title="Language">🌐</button>
+    <button class="mob-icon-btn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+    <button class="mob-icon-btn" onclick="doLogout()" title="Sign out" style="background:rgba(239,68,68,.18);color:#fca5a5">🚪</button>
+    <span class="cgpa-chip" id="mob-cgpa">0.000</span>
+  </div>
+  <div class="sb-overlay" id="sb-overlay" onclick="toggleSB()"></div>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="sb-logo">
+      <div class="app-name">🎓 Bahri University</div>
+      <div class="app-sub">CGPA Portal</div>
+    </div>
+    <div class="user-card">
+      <div class="u-name" id="s-name">Loading...</div>
+      <div class="u-id" id="s-id">ID: —</div>
+      <div class="cgpa-mini">
+        <span class="cgpa-big" id="s-cgpa">0.000</span>
+        <span class="standing-sm" id="s-standing">—</span>
+      </div>
+      <div style="margin-top:8px;font-size:11px;color:rgba(255,255,255,.28)">
+        <span class="save-dot" id="save-dot"></span>
+        <span id="save-lbl"></span>
+      </div>
+    </div>
+
+    <div class="nav-sec">
+      <div class="nav-lbl" id="nav-lbl-overview">Overview</div>
+      <div class="nav-item active" id="n-dashboard" onclick="sv('dashboard',this)">
+        <span class="nav-ico">📊</span><span id="nav-dashboard-txt">Dashboard</span>
+      </div>
+      <div class="nav-item" id="n-whatif" onclick="sv('whatif',this)">
+        <span class="nav-ico">🔮</span><span id="nav-whatif-txt">What-If</span>
+      </div>
+      <div class="nav-item" id="n-leaderboard" onclick="sv('leaderboard',this)">
+        <span class="nav-ico">🏆</span><span id="nav-leaderboard-txt">Leaderboard</span>
+      </div>
+      <div class="nav-item" id="n-profile" onclick="sv('profile',this)">
+        <span class="nav-ico">👤</span><span id="nav-profile-txt">Profile</span>
+      </div>
+    </div>
+
+    <div class="nav-sec">
+      <div class="nav-lbl" id="nav-lbl-years">Academic Years</div>
+      <div class="nav-item" id="n-y1" onclick="sv('y1',this)">
+        <span class="nav-ico">①</span><span id="nav-y1-txt">Year 1</span>
+        <span class="nav-badge">5%</span><span class="yr-hint" id="yh1"></span>
+      </div>
+      <div class="nav-item" id="n-y2" onclick="sv('y2',this)">
+        <span class="nav-ico">②</span><span id="nav-y2-txt">Year 2</span>
+        <span class="nav-badge">10%</span><span class="yr-hint" id="yh2"></span>
+      </div>
+      <div class="nav-item" id="n-y3" onclick="sv('y3',this)">
+        <span class="nav-ico">③</span><span id="nav-y3-txt">Year 3</span>
+        <span class="nav-badge">10%</span><span class="yr-hint" id="yh3"></span>
+      </div>
+      <div class="nav-item" id="n-y4" onclick="sv('y4',this)">
+        <span class="nav-ico">④</span><span id="nav-y4-txt">Year 4</span>
+        <span class="nav-badge">15%</span><span class="yr-hint" id="yh4"></span>
+      </div>
+      <div class="nav-item" id="n-y5" onclick="sv('y5',this)">
+        <span class="nav-ico">⑤</span><span id="nav-y5-txt">Year 5</span>
+        <span class="nav-badge">20%</span><span class="yr-hint" id="yh5"></span>
+      </div>
+      <div class="nav-item" id="n-y6" onclick="sv('y6',this)">
+        <span class="nav-ico">⑥</span><span id="nav-y6-txt">Year 6</span>
+        <span class="nav-badge">40%</span><span class="yr-hint" id="yh6"></span>
+      </div>
+    </div>
+
+    <div class="nav-sec">
+      <div class="nav-lbl" id="nav-lbl-resources">Resources</div>
+      <div class="nav-item" id="n-guide" onclick="sv('guide',this)">
+        <span class="nav-ico">📚</span><span id="nav-guide-txt">Grading Guide</span>
+      </div>
+    </div>
+
+    <div class="sb-footer">
+      <button class="btn-theme" onclick="toggleTheme()">🌙</button>
+      <button class="btn-lang" onclick="toggleLang()">🌐</button>
+      <button class="btn-logout" onclick="doLogout()" id="sb-logout-txt">Sign Out</button>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="main-content">
+    <div class="ci">
+
+      <!-- ════════ DASHBOARD ════════ -->
+      <div id="view-dashboard" class="view active">
+        <div class="ph">
+          <h1 id="dash-title">Academic Dashboard</h1>
+          <p id="dash-desc">Weighted GPA summary — Bahri University CGPA System</p>
+        </div>
+        <div id="partial-bar" class="partial-bar" style="display:none"></div>
+        <div class="sg">
+          <div class="sc" style="--scc:var(--primary)">
+            <div class="sc-ico">🎓</div>
+            <div class="sc-lbl" id="lbl-cgpa">Current CGPA</div>
+            <div class="sc-val" id="st-cgpa">0.000</div>
+            <div class="sc-sub" id="st-stnd">—</div>
+          </div>
+          <div class="sc" style="--scc:var(--ok)">
+            <div class="sc-ico">📚</div>
+            <div class="sc-lbl" id="lbl-credits">Total Credits</div>
+            <div class="sc-val" id="st-cred">0</div>
+            <div class="sc-sub" id="lbl-credits-sub">credit hours entered</div>
+          </div>
+          <div class="sc" style="--scc:var(--gold)">
+            <div class="sc-ico">✅</div>
+            <div class="sc-lbl" id="lbl-yrs-complete">Years Complete</div>
+            <div class="sc-val" id="st-yrs">0/6</div>
+            <div class="sc-sub"><div class="prog-bg"><div class="prog-fill" id="st-prog" style="width:0%"></div></div></div>
+          </div>
+          <div class="sc" style="--scc:#8b5cf6">
+            <div class="sc-ico">📈</div>
+            <div class="sc-lbl" id="lbl-best-yr">Best Year GPA</div>
+            <div class="sc-val" id="st-best">—</div>
+            <div class="sc-sub" id="st-bestl">No data yet</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-hdr">
+            <div>
+              <div class="card-title" id="tbl-title">Weighted Academic Record</div>
+              <div class="card-sub" id="tbl-sub">Annual GPA × year weight = contribution to final CGPA</div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <span id="dash-badge"></span>
+              <button class="exp-btn" style="background:var(--pb);color:var(--primary);border:1px solid var(--primary);padding:7px 13px;font-size:12px" onclick="openSnapModal()">
+                📸 <span id="btn-snap-txt">Screenshot</span>
+              </button>
+            </div>
+          </div>
+          <div class="tbl-scroll">
+            <table class="tbl">
+              <thead>
+                <tr>
+                  <th id="th-year">Year</th>
+                  <th id="th-weight">Weight</th>
+                  <th>Sem 1</th>
+                  <th>Sem 2</th>
+                  <th id="th-annual">Annual GPA</th>
+                  <th id="th-contrib">Contribution</th>
+                </tr>
+              </thead>
+              <tbody id="dash-tbody"></tbody>
+              <tfoot>
+                <tr style="background:var(--surface2)">
+                  <td colspan="5" style="text-align:right;font-weight:800;padding:11px 12px" id="td-final-label">Final CGPA</td>
+                  <td style="font-family:'Playfair Display',serif;font-size:21px;font-weight:800;color:var(--gold);text-align:center" id="dash-total">0.000</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="card">
+            <div class="card-hdr"><div class="card-title" id="chart-title">GPA Trend</div></div>
+            <div class="chart-wrap"><canvas id="gpa-chart"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-hdr">
+              <div>
+                <div class="card-title" id="export-title">Export Records</div>
+                <div class="card-sub" id="export-sub">Download for Excel / Sheets</div>
+              </div>
+            </div>
+            <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.7" id="export-info">
+              Export all course data, grades, credits and GPA calculations as CSV.
+            </p>
+            <button class="exp-btn exp-csv" onclick="exportCSV()">📥 <span id="btn-csv-txt">Download CSV</span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════ WHAT-IF ════════ -->
+      <div id="view-whatif" class="view">
+        <div class="ph">
+          <h1 id="wi-title">What-If Calculator</h1>
+          <p id="wi-desc">Toggle each year between its actual calculated GPA or a custom hypothetical value</p>
+        </div>
+        <div class="card">
+          <div class="card-hdr">
+            <div class="card-title" id="wi-proj-title">Year-by-Year Projections</div>
+            <button class="exp-btn" style="background:var(--gb);color:var(--gold);border:1px solid var(--gold);padding:7px 13px;font-size:12px" onclick="resetWhatIf()">
+              ↺ <span id="btn-wi-reset">Reset All</span>
+            </button>
+          </div>
+          <div class="wi-grid" id="wi-grid"></div>
+          <div class="wi-result">
+            <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:6px" id="wi-projected-lbl">Projected Final CGPA</div>
+            <div class="wi-big" id="wi-out">0.000</div>
+            <div class="wi-delta" id="wi-delta"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════ LEADERBOARD ════════ -->
+      <div id="view-leaderboard" class="view">
+        <div class="ph">
+          <h1 id="lb-title">Leaderboard</h1>
+          <p id="lb-desc">Students who opted in to share — manage your sharing in Profile</p>
+        </div>
+        <div class="card">
+          <div id="lb-my-status-bar"></div>
+          <div class="card-hdr">
+            <div>
+              <div class="card-title" id="lb-rank-title">Rankings</div>
+              <div class="card-sub" id="lb-count-txt">Loading...</div>
+            </div>
+            <button class="exp-btn exp-csv" onclick="loadLB()" style="padding:7px 14px;font-size:12px">
+              🔄 <span id="btn-lb-refresh">Refresh</span>
+            </button>
+          </div>
+          <input class="lb-search" id="lb-search" placeholder="🔍  Search by name or ID..." oninput="renderLB()">
+          <div class="lb-filters" id="lb-filters"></div>
+          <div id="lb-list"><div style="text-align:center;padding:40px;color:var(--muted)">⏳ Loading...</div></div>
+        </div>
+      </div>
+
+      <!-- ════════ PROFILE ════════ -->
+      <div id="view-profile" class="view">
+        <div class="ph">
+          <h1 id="prof-title">Profile</h1>
+          <p id="prof-desc">Personal information, security and leaderboard sharing settings</p>
+        </div>
+        <div class="prof-grid">
+          <div class="card">
+            <div class="card-hdr"><div class="card-title" id="prof-info-title">Personal Information</div></div>
+            <div class="form-fld"><label id="lbl-p-name">Full Name</label><input type="text" id="p-name"></div>
+            <div class="form-fld"><label id="lbl-p-id">University ID</label><input type="text" id="p-id"></div>
+            <button class="btn-save" onclick="updateProfile()" id="btn-save-prof">Save Changes</button>
+          </div>
+          <div class="card" id="security-card">
+            <div class="card-hdr"><div class="card-title" id="prof-security-title">Security</div></div>
+            <div class="form-fld"><label id="lbl-p-newpass">New Password</label><input type="password" id="p-newpass" placeholder="••••••••"></div>
+            <button class="btn-save" onclick="changePw()" id="btn-change-pw">Change Password</button>
+          </div>
+        </div>
+
+        <!-- BACKUP SECTION -->
+        <div class="card" style="margin-top:16px">
+          <div class="card-hdr">
+            <div>
+              <div class="card-title" id="prof-backup-title">💾 Backup & Transfer</div>
+              <div class="card-sub" id="prof-backup-sub">Export or import your entire data as a JSON file</div>
+            </div>
+          </div>
+          <div class="backup-btns">
+            <button style="background:var(--ob);color:#065f46;border:1px solid #6ee7b7" onclick="exportBackup()">
+              📤 <span id="btn-export-backup">Export Backup</span>
+            </button>
+            <button style="background:var(--pb);color:var(--primary);border:1px solid var(--primary)" onclick="importBackup()">
+              📥 <span id="btn-import-backup">Import Backup</span>
+            </button>
+            <button style="background:var(--gb);color:var(--gold);border:1px solid var(--gold)" onclick="exportBackup('transfer')">
+              🔄 <span id="btn-transfer">Transfer to Another Account</span>
+            </button>
+          </div>
+          <input type="file" id="backup-file-input" accept=".json" style="display:none" onchange="handleBackupFile(event)">
+        </div>
+
+        <!-- SHARING SECTION -->
+        <div class="share-section" id="share-section-wrap">
+          <div class="card-title" id="prof-share-title">🏆 Leaderboard Sharing</div>
+          <div class="card-sub" style="margin-bottom:14px" id="prof-share-sub">Control what others see on the leaderboard</div>
+          <div class="toggle-row">
+            <div>
+              <div class="toggle-label" id="share-toggle-lbl">Share on Leaderboard</div>
+              <div class="toggle-desc" id="share-toggle-desc">Make your CGPA visible to classmates</div>
+            </div>
+            <label class="switch"><input type="checkbox" id="share-toggle" onchange="toggleShare()"><span class="slider"></span></label>
+          </div>
+          <div id="share-yr-section" style="display:none">
+            <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px" id="share-select-yrs">Select years to share:</div>
+            <div class="yr-checks" id="share-yr-checks"></div>
+          </div>
+          <button class="btn-share-save" onclick="saveSharing()" id="btn-save-sharing">Save Sharing Settings</button>
+        </div>
+
+        <!-- DANGER -->
+        <div class="card" style="margin-top:16px;border-color:var(--danger)">
+          <div class="card-hdr"><div class="card-title" style="color:var(--danger)" id="prof-danger-title">⚠️ Danger Zone</div></div>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6" id="prof-danger-desc">
+            This will permanently delete all your GPA data. This action cannot be undone.
+          </p>
+          <button class="btn-dng" onclick="confirmResetAll()" id="btn-reset-all">Reset All Data</button>
+        </div>
+      </div>
+
+      <!-- ════════ YEAR VIEWS (y1-y6) ════════ -->
+      <div id="view-y1" class="view"></div>
+      <div id="view-y2" class="view"></div>
+      <div id="view-y3" class="view"></div>
+      <div id="view-y4" class="view"></div>
+      <div id="view-y5" class="view"></div>
+      <div id="view-y6" class="view"></div>
+
+      <!-- ════════ GUIDE ════════ -->
+      <div id="view-guide" class="view">
+        <div class="ph">
+          <h1 id="guide-title">📚 Grading Guide</h1>
+          <p id="guide-desc">Bahri University — Weighted CGPA Formula (Medicine)</p>
+        </div>
+        <div class="card">
+          <div class="card-title" id="guide-scale-title">Grade Scale</div>
+          <div class="tbl-scroll" style="margin-top:12px">
+            <table class="guide-tbl">
+              <thead><tr><th id="guide-th-grade">Grade</th><th id="guide-th-range">Range</th><th id="guide-th-pts">Points</th><th id="guide-th-class">Classification</th></tr></thead>
+              <tbody>
+                <tr><td class="g-A">A</td><td>≥ 80</td><td>4.00</td><td>Distinction</td></tr>
+                <tr><td class="g-Bp">B+</td><td>70 - 79</td><td>3.50</td><td>Merit</td></tr>
+                <tr><td class="g-B">B</td><td>60 - 69</td><td>3.00</td><td>Good</td></tr>
+                <tr><td class="g-C">C</td><td>50 - 59</td><td>2.00</td><td>Pass</td></tr>
+                <tr><td class="g-F">F</td><td>≤ 49</td><td>0.00</td><td>Fail</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title" id="guide-weights-title">Year Weights</div>
+          <div class="tbl-scroll" style="margin-top:12px">
+            <table class="guide-tbl">
+              <thead><tr><th id="guide-th-yr">Year</th><th id="guide-th-wt">Weight</th></tr></thead>
+              <tbody>
+                <tr><td>Year 1</td><td>5%</td></tr>
+                <tr><td>Year 2</td><td>10%</td></tr>
+                <tr><td>Year 3</td><td>10%</td></tr>
+                <tr><td>Year 4</td><td>15%</td></tr>
+                <tr><td>Year 5</td><td>20%</td></tr>
+                <tr><td>Year 6</td><td>40%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title" id="guide-formula-title">CGPA Formula</div>
+          <div class="formula-box" style="margin-top:12px">
+            CGPA = Σ (Year GPA × Weight)<br>
+            <br>
+            Year GPA = Total Quality Points / Total Credit Hours<br>
+            (across both semesters combined)<br>
+            <br>
+            Sem GPA = Σ(Grade Points × Credit Hours) / Σ(Credit Hours)<br>
+            <br>
+            Example:<br>
+            Year 5 GPA = 3.60, Weight = 20%<br>
+            Contribution = 3.60 × 0.20 = 0.720
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /ci -->
+  </div><!-- /main-content -->
+
+  <!-- Mobile Bottom Nav -->
+  <div class="mob-bot-nav">
+    <button class="mob-tab active" id="mt-dashboard" onclick="sv('dashboard',document.getElementById('n-dashboard'))">
+      <span class="mico">📊</span><span id="mt-dash-txt">Dashboard</span>
+    </button>
+    <button class="mob-tab" id="mt-years" onclick="openYrSheet()">
+      <span class="mico">📅</span><span id="mt-years-txt">Years</span>
+    </button>
+    <button class="mob-tab" id="mt-whatif" onclick="sv('whatif',document.getElementById('n-whatif'))">
+      <span class="mico">🔮</span><span id="mt-wi-txt">What-If</span>
+    </button>
+    <button class="mob-tab" id="mt-leaderboard" onclick="sv('leaderboard',document.getElementById('n-leaderboard'))">
+      <span class="mico">🏆</span><span id="mt-lb-txt">Board</span>
+    </button>
+    <button class="mob-tab" id="mt-profile" onclick="sv('profile',document.getElementById('n-profile'))">
+      <span class="mico">👤</span><span id="mt-prof-txt">Profile</span>
+    </button>
+  </div>
+
+</div><!-- /app -->
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import{getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged,updatePassword,sendPasswordResetEmail}from"https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import{getFirestore,doc,getDoc,setDoc,collection,getDocs,deleteDoc,query,where}from"https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const FB={apiKey:"AIzaSyB8cHHgTPa85KsRcxEAGrLyHBBfCyPbUH4",authDomain:"bahri-gpa-app.firebaseapp.com",projectId:"bahri-gpa-app",storageBucket:"bahri-gpa-app.firebasestorage.app",messagingSenderId:"796811999739",appId:"1:796811999739:web:f9fb1425c1107b3cf6335e"};
+const fbApp=initializeApp(FB);
+const auth=getAuth(fbApp);
+const db=getFirestore(fbApp);
+
+/* ══════════════════════════════════════════ */
+/*            i18n — LANGUAGE SYSTEM          */
+/* ══════════════════════════════════════════ */
+const LANGS = {
+  en: {
+    signIn:'Sign In', createAccount:'Create Account', continueGuest:'Continue as Guest',
+    guestNote:'Guest data is saved locally and won\'t sync across devices',
+    theme:'Theme', back:'Back', email:'Email', password:'Password',
+    fullName:'Full Name', universityId:'University ID',
+    passwordMin:'Password (min. 6 chars)', signInBtn:'Sign In →',
+    createAccountBtn:'Create Account →', forgotPassword:'Forgot password?',
+    resetSent:'Password reset email sent!', fillAllFields:'Please fill all fields.',
+    completeAllFields:'Complete all fields (password ≥ 6 chars).',
+    incorrectLogin:'Incorrect email or password.',
+    regFailed:'Registration failed. Email may already be in use.',
+    guestWarning:'Guest Mode — Your data is saved locally only',
+    createAccountSync:'Create Account & Sync', downloadBackup:'💾 Download Backup',
+    guestUser:'Guest User', guestId:'Local Mode',
+    overview:'Overview', dashboard:'Dashboard', whatIf:'What-If',
+    leaderboard:'Leaderboard', profile:'Profile', academicYears:'Academic Years',
+    resources:'Resources', gradingGuide:'Grading Guide', signOut:'Sign Out',
+    year:'Year', years:'Years',
+    academicDashboard:'Academic Dashboard',
+    dashboardDesc:'Weighted GPA summary — Bahri University CGPA System',
+    currentCGPA:'Current CGPA', totalCredits:'Total Credits',
+    creditHoursEntered:'credit hours entered',
+    yearsComplete:'Years Complete', bestYearGPA:'Best Year GPA',
+    noDataYet:'No data yet', weightedRecord:'Weighted Academic Record',
+    weightedRecordDesc:'Annual GPA × year weight = contribution to final CGPA',
+    screenshot:'Screenshot', weight:'Weight', annualGPA:'Annual GPA',
+    contribution:'Contribution', finalCGPA:'Final CGPA',
+    gpaTrend:'GPA Trend', exportRecords:'Export Records',
+    exportRecordsDesc:'Download for Excel / Sheets',
+    exportRecordsInfo:'Export all course data, grades, credits and GPA calculations as CSV.',
+    downloadCSV:'Download CSV',
+    distinction:'Distinction', merit:'Merit', pass:'Pass', atRisk:'At Risk',
+    partialData:'Partial Data', noData:'No Data',
+    semester:'Semester', course:'Course', creditHours:'Credit Hrs',
+    grade:'Grade', points:'Points', remove:'Remove',
+    addCourse:'+ Add Course', gpa:'GPA', courses:'Courses',
+    courseByGrade:'Course-by-Course', manualGPA:'Manual GPA',
+    annualDirect:'Annual GPA Direct',
+    manualGPALabel:'Manual Semester GPA', manualHrsLabel:'Total Credit Hours',
+    annualGPALabel:'Annual GPA',
+    annualInfo:'Enter the annual GPA directly if you have it. This overrides both semester calculations.',
+    importCourses:'📋 Import Courses', noGrade:'No Grade',
+    whatIfCalc:'What-If Calculator',
+    whatIfDesc:'Toggle each year between its actual calculated GPA or a custom hypothetical value',
+    yearProjections:'Year-by-Year Projections', resetAll:'Reset All',
+    projectedCGPA:'Projected Final CGPA', actual:'Actual', custom:'Custom',
+    fromData:'from your data', vsActual:'vs actual', change:'change',
+    leaderboardDesc:'Students who opted in to share — manage your sharing in Profile',
+    rankings:'Rankings', refresh:'Refresh',
+    searchPlaceholder:'🔍  Search by name or ID...',
+    allStandings:'All', lbEmpty:'No students have shared yet.',
+    lbNotSharing:'You are not sharing on the leaderboard.',
+    lbGoProfile:'Go to Profile to enable sharing.',
+    lbEnableSharing:'Enable Sharing',
+    lbStudents:'students sharing', lbYourRank:'Your rank',
+    profileDesc:'Personal information, security and leaderboard sharing settings',
+    personalInfo:'Personal Information', security:'Security',
+    newPassword:'New Password', saveChanges:'Save Changes',
+    changePassword:'Change Password',
+    backupTransfer:'💾 Backup & Transfer',
+    backupTransferDesc:'Export or import your entire data as a JSON file',
+    exportBackupBtn:'Export Backup', importBackupBtn:'Import Backup',
+    transferBtn:'Transfer to Another Account',
+    leaderboardSharing:'🏆 Leaderboard Sharing',
+    sharingDesc:'Control what others see on the leaderboard',
+    shareOnLeaderboard:'Share on Leaderboard',
+    shareOnDesc:'Make your CGPA visible to classmates',
+    selectYearsShare:'Select years to share:',
+    saveSharingBtn:'Save Sharing Settings',
+    dangerZone:'⚠️ Danger Zone',
+    dangerDesc:'This will permanently delete all your GPA data. This action cannot be undone.',
+    resetAllData:'Reset All Data',
+    gradeScale:'Grade Scale', yearWeights:'Year Weights',
+    cgpaFormula:'CGPA Formula',
+    guideGrade:'Grade', guideRange:'Range', guidePoints:'Points',
+    guideClass:'Classification', guideYear:'Year', guideWeight:'Weight',
+    confirmAction:'Confirm Action', cancel:'Cancel', delete:'Delete', confirm:'Confirm',
+    areYouSure:'Are you sure?',
+    resetConfirm:'This will delete ALL your GPA data permanently. Are you sure?',
+    logoutConfirm:'Are you sure you want to sign out?',
+    profileUpdated:'Profile updated!', passwordChanged:'Password changed!',
+    sharingUpdated:'Sharing settings saved!',
+    dataReset:'All data has been reset.',
+    dataSaved:'Data saved!', saving:'Saving...',
+    backupExported:'Backup exported!', backupImported:'Backup imported successfully!',
+    invalidBackup:'Invalid backup file.',
+    importConfirm:'This will replace all current data. Continue?',
+    copied:'Copied!', generated:'Image generated!',
+    screenshotTitle:'Export as Image', generateImage:'Generate Image',
+    snapName:'Show Name', snapId:'Show University ID',
+    snapSummary:'Show CGPA Summary', snapYear:'Show Year',
+    of:'of', noCoursesYet:'No courses yet — add some above!',
+    loading:'Loading...', enterData:'Enter data to see standing',
+    showingWeight:'Showing',ofTotalWeight:'of total academic weight',
+    yearsEntered:'years entered',cgpaWillChange:'Your CGPA will change significantly as you complete more years.',
+    inProgress:'In Progress',
+    partialWarning:'Showing partial data',
+  },
+  ar: {
+    signIn:'تسجيل الدخول', createAccount:'إنشاء حساب', continueGuest:'الدخول كضيف',
+    guestNote:'بيانات الضيف تُحفظ محلياً فقط ولن تتزامن بين الأجهزة',
+    theme:'المظهر', back:'رجوع', email:'البريد الإلكتروني', password:'كلمة المرور',
+    fullName:'الاسم الكامل', universityId:'الرقم الجامعي',
+    passwordMin:'كلمة المرور (6 أحرف على الأقل)', signInBtn:'تسجيل الدخول →',
+    createAccountBtn:'إنشاء حساب →', forgotPassword:'نسيت كلمة المرور؟',
+    resetSent:'تم إرسال رابط إعادة تعيين كلمة المرور!',
+    fillAllFields:'يرجى ملء جميع الحقول.',
+    completeAllFields:'أكمل جميع الحقول (كلمة المرور ≥ 6 أحرف).',
+    incorrectLogin:'بريد إلكتروني أو كلمة مرور غير صحيحة.',
+    regFailed:'فشل التسجيل. البريد الإلكتروني قد يكون مستخدماً.',
+    guestWarning:'وضع الضيف — بياناتك محفوظة محلياً فقط',
+    createAccountSync:'إنشاء حساب ومزامنة', downloadBackup:'💾 تحميل نسخة احتياطية',
+    guestUser:'مستخدم ضيف', guestId:'وضع محلي',
+    overview:'نظرة عامة', dashboard:'لوحة التحكم', whatIf:'ماذا لو',
+    leaderboard:'المتصدرين', profile:'الملف الشخصي', academicYears:'السنوات الدراسية',
+    resources:'المصادر', gradingGuide:'دليل الدرجات', signOut:'تسجيل الخروج',
+    year:'السنة', years:'السنوات',
+    academicDashboard:'لوحة التحكم الأكاديمية',
+    dashboardDesc:'ملخص المعدل الموزون — نظام المعدل التراكمي لجامعة بحري',
+    currentCGPA:'المعدل التراكمي الحالي', totalCredits:'إجمالي الساعات',
+    creditHoursEntered:'ساعات معتمدة مُدخلة',
+    yearsComplete:'السنوات المكتملة', bestYearGPA:'أفضل معدل سنوي',
+    noDataYet:'لا توجد بيانات بعد', weightedRecord:'السجل الأكاديمي الموزون',
+    weightedRecordDesc:'المعدل السنوي × وزن السنة = المساهمة في المعدل النهائي',
+    screenshot:'صورة', weight:'الوزن', annualGPA:'المعدل السنوي',
+    contribution:'المساهمة', finalCGPA:'المعدل التراكمي النهائي',
+    gpaTrend:'منحنى المعدل', exportRecords:'تصدير السجلات',
+    exportRecordsDesc:'تحميل لـ Excel / Sheets',
+    exportRecordsInfo:'تصدير جميع بيانات المواد والدرجات والساعات وحسابات المعدل كملف CSV.',
+    downloadCSV:'تحميل CSV',
+    distinction:'امتياز', merit:'جيد جداً', pass:'مقبول', atRisk:'معرض للخطر',
+    partialData:'بيانات جزئية', noData:'لا توجد بيانات',
+    semester:'الفصل', course:'المادة', creditHours:'الساعات',
+    grade:'الدرجة', points:'النقاط', remove:'حذف',
+    addCourse:'+ إضافة مادة', gpa:'المعدل', courses:'المواد',
+    courseByGrade:'حسب المواد', manualGPA:'معدل يدوي',
+    annualDirect:'معدل سنوي مباشر',
+    manualGPALabel:'المعدل الفصلي اليدوي', manualHrsLabel:'إجمالي الساعات المعتمدة',
+    annualGPALabel:'المعدل السنوي',
+    annualInfo:'أدخل المعدل السنوي مباشرة إذا كان متوفراً لديك. هذا يتجاوز حسابات الفصلين.',
+    importCourses:'📋 استيراد المواد', noGrade:'بدون درجة',
+    whatIfCalc:'حاسبة ماذا لو',
+    whatIfDesc:'بدّل كل سنة بين معدلها الفعلي المحسوب أو قيمة افتراضية مخصصة',
+    yearProjections:'التوقعات حسب السنة', resetAll:'إعادة تعيين الكل',
+    projectedCGPA:'المعدل التراكمي المتوقع', actual:'فعلي', custom:'مخصص',
+    fromData:'من بياناتك', vsActual:'مقابل الفعلي', change:'التغيير',
+    leaderboardDesc:'الطلاب الذين وافقوا على المشاركة — تحكم في مشاركتك من الملف الشخصي',
+    rankings:'الترتيب', refresh:'تحديث',
+    searchPlaceholder:'🔍  بحث بالاسم أو الرقم...',
+    allStandings:'الكل', lbEmpty:'لم يشارك أي طالب بعد.',
+    lbNotSharing:'أنت لا تشارك في لوحة المتصدرين.',
+    lbGoProfile:'اذهب للملف الشخصي لتفعيل المشاركة.',
+    lbEnableSharing:'تفعيل المشاركة',
+    lbStudents:'طالب مشارك', lbYourRank:'ترتيبك',
+    profileDesc:'المعلومات الشخصية والأمان وإعدادات المشاركة',
+    personalInfo:'المعلومات الشخصية', security:'الأمان',
+    newPassword:'كلمة المرور الجديدة', saveChanges:'حفظ التغييرات',
+    changePassword:'تغيير كلمة المرور',
+    backupTransfer:'💾 النسخ الاحتياطي والنقل',
+    backupTransferDesc:'تصدير أو استيراد جميع بياناتك كملف JSON',
+    exportBackupBtn:'تصدير نسخة احتياطية', importBackupBtn:'استيراد نسخة احتياطية',
+    transferBtn:'نقل إلى حساب آخر',
+    leaderboardSharing:'🏆 مشاركة لوحة المتصدرين',
+    sharingDesc:'تحكم فيما يراه الآخرون على لوحة المتصدرين',
+    shareOnLeaderboard:'المشاركة في لوحة المتصدرين',
+    shareOnDesc:'اجعل معدلك مرئياً لزملائك',
+    selectYearsShare:'اختر السنوات للمشاركة:',
+    saveSharingBtn:'حفظ إعدادات المشاركة',
+    dangerZone:'⚠️ منطقة الخطر',
+    dangerDesc:'سيتم حذف جميع بيانات المعدل نهائياً. لا يمكن التراجع عن هذا الإجراء.',
+    resetAllData:'إعادة تعيين جميع البيانات',
+    gradeScale:'مقياس الدرجات', yearWeights:'أوزان السنوات',
+    cgpaFormula:'معادلة المعدل التراكمي',
+    guideGrade:'الدرجة', guideRange:'النطاق', guidePoints:'النقاط',
+    guideClass:'التصنيف', guideYear:'السنة', guideWeight:'الوزن',
+    confirmAction:'تأكيد الإجراء', cancel:'إلغاء', delete:'حذف', confirm:'تأكيد',
+    areYouSure:'هل أنت متأكد؟',
+    resetConfirm:'سيتم حذف جميع بيانات المعدل نهائياً. هل أنت متأكد؟',
+    logoutConfirm:'هل أنت متأكد من تسجيل الخروج؟',
+    profileUpdated:'تم تحديث الملف الشخصي!', passwordChanged:'تم تغيير كلمة المرور!',
+    sharingUpdated:'تم حفظ إعدادات المشاركة!',
+    dataReset:'تم إعادة تعيين جميع البيانات.',
+    dataSaved:'تم حفظ البيانات!', saving:'جارٍ الحفظ...',
+    backupExported:'تم تصدير النسخة الاحتياطية!',
+    backupImported:'تم استيراد النسخة الاحتياطية بنجاح!',
+    invalidBackup:'ملف نسخة احتياطية غير صالح.',
+    importConfirm:'سيتم استبدال جميع البيانات الحالية. متابعة؟',
+    copied:'تم النسخ!', generated:'تم إنشاء الصورة!',
+    screenshotTitle:'تصدير كصورة', generateImage:'إنشاء صورة',
+    snapName:'إظهار الاسم', snapId:'إظهار الرقم الجامعي',
+    snapSummary:'إظهار ملخص المعدل', snapYear:'إظهار السنة',
+    of:'من', noCoursesYet:'لا توجد مواد بعد — أضف بعض المواد أعلاه!',
+    loading:'جارٍ التحميل...', enterData:'أدخل بيانات لعرض التقدير',
+    showingWeight:'عرض', ofTotalWeight:'من الوزن الأكاديمي الكلي',
+    yearsEntered:'سنوات مُدخلة', cgpaWillChange:'معدلك سيتغير بشكل ملحوظ عند إكمال المزيد من السنوات.',
+    inProgress:'قيد التقدم',
+    partialWarning:'عرض بيانات جزئية',
+  }
+};
+
+let currentLang = localStorage.getItem('appLang') || 'en';
+function t(key){ return (LANGS[currentLang]&&LANGS[currentLang][key]) || LANGS.en[key] || key; }
+
+function applyLang(){
+  const isAr = currentLang==='ar';
+  document.documentElement.lang = currentLang;
+  document.documentElement.dir = isAr?'rtl':'ltr';
+  document.title = isAr?'بوابة المعدل التراكمي — جامعة بحري':'CGPA Portal — Bahri University';
+
+  const langBtnTxt = isAr?'EN':'عربي';
+  const els = {
+    'lang-btn-w':langBtnTxt,'lang-btn-a':langBtnTxt,
+    'w-signin-txt':t('signIn'),'w-register-txt':t('createAccount'),
+    'w-guest-txt':t('continueGuest'),'w-guest-note':t('guestNote'),
+    'w-theme-txt':t('theme'),'a-theme-txt':t('theme'),
+    'auth-back-txt':t('back'),
+    'tab-login':t('signIn'),'tab-register':t('createAccount'),
+    'lbl-l-email':t('email'),'lbl-l-pass':t('password'),
+    'btn-login-txt':t('signInBtn'),'forgot-pw-txt':t('forgotPassword'),
+    'lbl-r-name':t('fullName'),'lbl-r-id':t('universityId'),
+    'lbl-r-email':t('email'),'lbl-r-pass':t('passwordMin'),
+    'btn-signup-txt':t('createAccountBtn'),
+    'guest-warn-text':t('guestWarning'),
+    'nav-lbl-overview':t('overview'),'nav-dashboard-txt':t('dashboard'),
+    'nav-whatif-txt':t('whatIf'),'nav-leaderboard-txt':t('leaderboard'),
+    'nav-profile-txt':t('profile'),'nav-lbl-years':t('academicYears'),
+    'nav-y1-txt':t('year')+' 1','nav-y2-txt':t('year')+' 2',
+    'nav-y3-txt':t('year')+' 3','nav-y4-txt':t('year')+' 4',
+    'nav-y5-txt':t('year')+' 5','nav-y6-txt':t('year')+' 6',
+    'nav-lbl-resources':t('resources'),'nav-guide-txt':t('gradingGuide'),
+    'sb-logout-txt':t('signOut'),
+    'dash-title':t('academicDashboard'),'dash-desc':t('dashboardDesc'),
+    'lbl-cgpa':t('currentCGPA'),'lbl-credits':t('totalCredits'),
+    'lbl-credits-sub':t('creditHoursEntered'),
+    'lbl-yrs-complete':t('yearsComplete'),'lbl-best-yr':t('bestYearGPA'),
+    'tbl-title':t('weightedRecord'),'tbl-sub':t('weightedRecordDesc'),
+    'btn-snap-txt':t('screenshot'),
+    'th-year':t('year'),'th-weight':t('weight'),
+    'th-annual':t('annualGPA'),'th-contrib':t('contribution'),
+    'td-final-label':t('finalCGPA'),
+    'chart-title':t('gpaTrend'),
+    'export-title':t('exportRecords'),'export-sub':t('exportRecordsDesc'),
+    'export-info':t('exportRecordsInfo'),'btn-csv-txt':t('downloadCSV'),
+    'wi-title':t('whatIfCalc'),'wi-desc':t('whatIfDesc'),
+    'wi-proj-title':t('yearProjections'),'btn-wi-reset':t('resetAll'),
+    'wi-projected-lbl':t('projectedCGPA'),
+    'lb-title':t('leaderboard'),'lb-desc':t('leaderboardDesc'),
+    'lb-rank-title':t('rankings'),'btn-lb-refresh':t('refresh'),
+    'prof-title':t('profile'),'prof-desc':t('profileDesc'),
+    'prof-info-title':t('personalInfo'),'lbl-p-name':t('fullName'),
+    'lbl-p-id':t('universityId'),'btn-save-prof':t('saveChanges'),
+    'prof-security-title':t('security'),'lbl-p-newpass':t('newPassword'),
+    'btn-change-pw':t('changePassword'),
+    'prof-backup-title':t('backupTransfer'),'prof-backup-sub':t('backupTransferDesc'),
+    'btn-export-backup':t('exportBackupBtn'),'btn-import-backup':t('importBackupBtn'),
+    'btn-transfer':t('transferBtn'),
+    'prof-share-title':t('leaderboardSharing'),'prof-share-sub':t('sharingDesc'),
+    'share-toggle-lbl':t('shareOnLeaderboard'),'share-toggle-desc':t('shareOnDesc'),
+    'share-select-yrs':t('selectYearsShare'),'btn-save-sharing':t('saveSharingBtn'),
+    'prof-danger-title':t('dangerZone'),'prof-danger-desc':t('dangerDesc'),
+    'btn-reset-all':t('resetAllData'),
+    'guide-title':'📚 '+t('gradingGuide'),
+    'guide-desc':isAr?'جامعة بحري — معادلة المعدل التراكمي الموزون':'Bahri University — Weighted CGPA Formula',
+    'guide-scale-title':t('gradeScale'),'guide-weights-title':t('yearWeights'),
+    'guide-formula-title':t('cgpaFormula'),
+    'guide-th-grade':t('guideGrade'),'guide-th-range':t('guideRange'),
+    'guide-th-pts':t('guidePoints'),'guide-th-class':t('guideClass'),
+    'guide-th-yr':t('guideYear'),'guide-th-wt':t('guideWeight'),
+    'mt-dash-txt':t('dashboard'),'mt-years-txt':t('years'),
+    'mt-wi-txt':t('whatIf'),'mt-lb-txt':t('leaderboard'),
+    'mt-prof-txt':t('profile'),
+    'yr-sheet-title':isAr?'اختر السنة':'Select Year',
+  };
+  Object.entries(els).forEach(([id,txt])=>{
+    const el=document.getElementById(id);
+    if(el) el.textContent=txt;
+  });
+  const lbSearch=document.getElementById('lb-search');
+  if(lbSearch) lbSearch.placeholder=t('searchPlaceholder');
+  localStorage.setItem('appLang',currentLang);
+}
+
+window.toggleLang=function(){
+  currentLang = currentLang==='en'?'ar':'en';
+  applyLang();
+  if(typeof updateAll==='function') updateAll();
+};
+
+/* ══════════════════════════════════════════ */
+/*            THEME PERSISTENCE              */
+/* ══════════════════════════════════════════ */
+function applySavedTheme(){
+  const saved=localStorage.getItem('appTheme');
+  if(saved) document.documentElement.setAttribute('data-theme',saved);
+}
+applySavedTheme();
+applyLang();
+
+window.toggleTheme=function(){
+  const d=document.documentElement;
+  const next=d.getAttribute('data-theme')==='dark'?'light':'dark';
+  d.setAttribute('data-theme',next);
+  localStorage.setItem('appTheme',next);
+};
+
+/* ══════════════════════════════════════════ */
+/*         CORE VARIABLES & GRADES           */
+/* ══════════════════════════════════════════ */
+// ★ CORRECT Bahri University grading system ★
+const WT = {1:0.05, 2:0.10, 3:0.10, 4:0.15, 5:0.20, 6:0.40};
+const SC_GRADES = [
+  {g:'A',  pts:4.0, r:'≥ 80'},
+  {g:'B+', pts:3.5, r:'70-79'},
+  {g:'B',  pts:3.0, r:'60-69'},
+  {g:'C',  pts:2.0, r:'50-59'},
+  {g:'F',  pts:0.0, r:'≤ 49'}
+];
+const GRADE_MAP = {}; // {'A':4, 'B+':3.5, ...}
+SC_GRADES.forEach(x => GRADE_MAP[x.g] = x.pts);
+
+const STANDINGS = [
+  {min:3.5, label:'🏅 Distinction', cls:'bd-dist', key:'distinction'},
+  {min:3.0, label:'🎖 Merit',       cls:'bd-merit', key:'merit'},
+  {min:2.0, label:'📋 Pass',        cls:'bd-pass',  key:'pass'},
+  {min:0,   label:'⚠️ At Risk',     cls:'bd-risk',  key:'atRisk'}
+];
+
+let CU = null;
+let UD = null;
+let isGuest = false;
+let gpaChart = null;
+let saveTimer = null;
+let impTarget = null;
+let wiState = null;
+let lbData = [];
+let lbFilter = 'all';
+let confCallback = null;
+
+/* ══════════════════════════════════════════ */
+/*    DEFAULT DATA — COMPATIBLE WITH V4      */
+/* ══════════════════════════════════════════ */
+function defaultUD(){
+  const def = {m:false, g:'', c:'', d:[]};
+  const gd = {};
+  for(let y=1; y<=6; y++){
+    gd[y] = {
+      s1: {m:false, g:'', c:'', d:[]},
+      s2: {m:false, g:'', c:'', d:[]},
+      annualMode: false,
+      annualGPA: ''
+    };
+  }
+  return {
+    profile: {name:'', id:''},
+    gpaData: gd,
+    sharing: {enabled:false, showName:true, showId:false, showCourses:false, years:[1,2,3,4,5,6]}
+  };
+}
+/* ══════════════════════════════════════════ */
+/*         WELCOME / AUTH NAVIGATION         */
+/* ══════════════════════════════════════════ */
+window.showAuth = function(tab){
+  document.getElementById('welcome-screen').style.display = 'none';
+  document.getElementById('auth-screen').style.display = 'flex';
+  switchAuthTab(tab || 'login');
+};
+
+window.backToWelcome = function(){
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('welcome-screen').style.display = 'flex';
+};
+
+window.switchAuthTab = function(tab){
+  ['login','register'].forEach(id=>{
+    document.getElementById('tab-'+id).classList.toggle('active', id===tab);
+    document.getElementById('form-'+id).classList.toggle('active', id===tab);
+  });
+  document.querySelectorAll('.auth-err').forEach(e=> e.classList.remove('show'));
+};
+
+function showAuthErr(id, msg){
+  const el = document.getElementById(id);
+  el.textContent = msg; el.classList.add('show');
+  setTimeout(()=> el.classList.remove('show'), 5000);
+}
+
+/* ══════════════════════════════════════════ */
+/*              AUTHENTICATION               */
+/* ══════════════════════════════════════════ */
+window.login = function(){
+  const e = document.getElementById('l-email').value.trim();
+  const p = document.getElementById('l-pass').value;
+  if(!e||!p) return showAuthErr('err-login', t('fillAllFields'));
+  signInWithEmailAndPassword(auth, e, p)
+    .catch(()=> showAuthErr('err-login', t('incorrectLogin')));
+};
+
+window.signup = async function(){
+  const n = document.getElementById('r-name').value.trim();
+  const sid = document.getElementById('r-id').value.trim();
+  const e = document.getElementById('r-email').value.trim();
+  const p = document.getElementById('r-pass').value;
+  if(!n||!sid||!e||p.length<6) return showAuthErr('err-reg', t('completeAllFields'));
+  try{
+    const res = await createUserWithEmailAndPassword(auth, e, p);
+    const d = defaultUD();
+    d.profile.name = n;
+    d.profile.id = sid;
+    await setDoc(doc(db,'users',res.user.uid), d);
+  }catch(err){ showAuthErr('err-reg', t('regFailed')); }
+};
+
+window.resetPw = function(){
+  const e = document.getElementById('l-email').value.trim();
+  if(!e) return showAuthErr('err-login', t('fillAllFields'));
+  sendPasswordResetEmail(auth, e)
+    .then(()=> toast(t('resetSent'),'inf'))
+    .catch(()=> showAuthErr('err-login','Email not found.'));
+};
+
+window.doLogout = function(){
+  showConfirm(t('logoutConfirm'), ()=>{
+    if(isGuest){
+      isGuest = false; CU = null; UD = null;
+      document.getElementById('app').style.display = 'none';
+      document.getElementById('guest-banner').classList.remove('show');
+      document.body.classList.remove('has-guest-banner');
+      document.getElementById('welcome-screen').style.display = 'flex';
+    } else {
+      signOut(auth);
+    }
+  }, t('signOut'));
+};
+
+/* ══════════════════════════════════════════ */
+/*               GUEST MODE                  */
+/* ══════════════════════════════════════════ */
+window.enterGuest = function(){
+  isGuest = true;
+  CU = { uid:'guest_local', email:'guest@local' };
+
+  const saved = localStorage.getItem('guestData');
+  if(saved){
+    try{ UD = JSON.parse(saved); }catch(e){ UD = defaultUD(); }
+  } else {
+    UD = defaultUD();
+  }
+  if(!UD.profile) UD.profile = {name:'', id:''};
+  if(!UD.profile.name) UD.profile.name = t('guestUser');
+  ensureData();
+
+  document.getElementById('welcome-screen').style.display = 'none';
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+
+  document.getElementById('guest-banner').classList.add('show');
+  document.body.classList.add('has-guest-banner');
+
+  document.getElementById('security-card').style.display = 'none';
+  document.getElementById('share-section-wrap').style.display = 'none';
+
+  initApp();
+};
+
+window.guestToAccount = function(){
+  localStorage.setItem('pendingTransfer', JSON.stringify(UD));
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('guest-banner').classList.remove('show');
+  document.body.classList.remove('has-guest-banner');
+  isGuest = false;
+  showAuth('register');
+  toast(t('createAccountSync'), 'inf');
+};
+
+/* ══════════════════════════════════════════ */
+/*       ENSURE DATA STRUCTURE (V4 compat)   */
+/* ══════════════════════════════════════════ */
+function ensureData(){
+  if(!UD.profile) UD.profile = {name:'', id:''};
+  if(!UD.gpaData) UD.gpaData = {};
+  if(!UD.sharing) UD.sharing = {enabled:false, showName:true, showId:false, showCourses:false, years:[1,2,3,4,5,6]};
+  const def = {m:false, g:'', c:'', d:[]};
+  for(let y=1; y<=6; y++){
+    if(!UD.gpaData[y]) UD.gpaData[y] = {s1:{...def,d:[]}, s2:{...def,d:[]}, annualMode:false, annualGPA:''};
+    if(!UD.gpaData[y].s1) UD.gpaData[y].s1 = {...def, d:[]};
+    if(!UD.gpaData[y].s2) UD.gpaData[y].s2 = {...def, d:[]};
+    if(!UD.gpaData[y].s1.d) UD.gpaData[y].s1.d = [];
+    if(!UD.gpaData[y].s2.d) UD.gpaData[y].s2.d = [];
+    if(UD.gpaData[y].annualMode === undefined) UD.gpaData[y].annualMode = false;
+    if(UD.gpaData[y].annualGPA === undefined) UD.gpaData[y].annualGPA = '';
+  }
+}
+
+/* ══════════════════════════════════════════ */
+/*           SAVE / LOAD / STATUS            */
+/* ══════════════════════════════════════════ */
+function setSaveStatus(s){
+  const dot = document.getElementById('save-dot');
+  const lbl = document.getElementById('save-lbl');
+  if(!dot) return;
+  dot.className = 'save-dot ' + (s||'');
+  lbl.textContent = s==='saving' ? t('saving') : s==='saved' ? '✓' : '';
+}
+
+async function save(){
+  setSaveStatus('saving');
+  try{
+    if(isGuest){
+      localStorage.setItem('guestData', JSON.stringify(UD));
+    } else {
+      await setDoc(doc(db,'users',CU.uid), UD);
+      if(UD.sharing?.enabled) syncPublicProfile().catch(()=>{});
+    }
+    setSaveStatus('saved');
+    setTimeout(()=> setSaveStatus(''), 2200);
+  }catch(e){
+    console.error('Save failed:', e);
+    toast('Save failed: ' + e.message, 'err');
+    setSaveStatus('');
+  }
+}
+
+function scheduleSave(){
+  setSaveStatus('saving');
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(()=> save(), 700);
+}
+window.scheduleSave = scheduleSave;
+
+async function loadUserData(){
+  if(isGuest) return;
+  try{
+    const snap = await getDoc(doc(db,'users',CU.uid));
+    if(snap.exists()){
+      UD = snap.data();
+      ensureData();
+    } else {
+      const pending = localStorage.getItem('pendingTransfer');
+      if(pending){
+        try{
+          UD = JSON.parse(pending);
+          localStorage.removeItem('pendingTransfer');
+          ensureData();
+          await save();
+          toast(t('backupImported'), 'ok');
+        }catch(e){ UD = defaultUD(); }
+      } else {
+        UD = defaultUD();
+      }
+      await setDoc(doc(db,'users',CU.uid), UD);
+    }
+  }catch(e){
+    console.error('Load failed:', e);
+    UD = defaultUD();
+  }
+}
+
+
+/* ══════════════════════════════════════════ */
+/*         BACKUP / EXPORT / IMPORT          */
+/* ══════════════════════════════════════════ */
+window.exportBackup = function(mode){
+  if(!UD) return;
+  const data = {
+    _meta: {
+      app: 'Bahri CGPA Portal',
+      version: 5,
+      exportDate: new Date().toISOString(),
+      mode: mode || 'backup'
+    },
+    userData: JSON.parse(JSON.stringify(UD))
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'bahri-cgpa-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast(t('backupExported'), 'ok');
+};
+
+window.importBackup = function(){
+  document.getElementById('backup-file-input').click();
+};
+
+window.handleBackupFile = function(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    try{
+      const data = JSON.parse(ev.target.result);
+      let imported = null;
+      if(data._meta && data.userData) imported = data.userData;
+      else if(data.gpaData) imported = data;
+      else { toast(t('invalidBackup'), 'err'); return; }
+      showConfirm(t('importConfirm'), async ()=>{
+        UD = imported;
+        ensureData();
+        await save();
+        fullRender();
+        toast(t('backupImported'), 'ok');
+      }, t('confirm'));
+    }catch(err){ toast(t('invalidBackup'), 'err'); }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+};
+
+/* ══════════════════════════════════════════ */
+/*            TOAST & CONFIRM                */
+/* ══════════════════════════════════════════ */
+function toast(msg, type){
+  type = type || 'ok';
+  const el = document.createElement('div');
+  el.className = 'toast t-'+type;
+  el.textContent = msg;
+  document.getElementById('toast-cnt').appendChild(el);
+  requestAnimationFrame(()=> requestAnimationFrame(()=> el.classList.add('show')));
+  setTimeout(()=>{ el.classList.remove('show'); setTimeout(()=> el.remove(), 260); }, 3200);
+}
+window.toast = toast;
+
+function showConfirm(msg, cb, btnText){
+  document.getElementById('conf-txt').textContent = msg;
+  const okBtn = document.getElementById('conf-ok-btn');
+  okBtn.textContent = btnText || t('delete');
+  confCallback = cb;
+  okBtn.onclick = ()=>{ if(confCallback) confCallback(); closeConf(); };
+  document.getElementById('conf-modal').classList.add('open');
+}
+
+window.closeConf = function(){ document.getElementById('conf-modal').classList.remove('open'); confCallback=null; };
+window.closeDetail = function(){ document.getElementById('detail-modal').classList.remove('open'); };
+
+/* ══════════════════════════════════════════ */
+/*        GPA CALCULATIONS (V4 compatible)   */
+/* ══════════════════════════════════════════ */
+function calcSem(sem){
+  let pts=0, hrs=0;
+  if(!sem) return {pts, hrs, gpa:null};
+  if(sem.m){
+    const g = Math.min(4, Math.max(0, parseFloat(sem.g)||0));
+    const h = Math.max(0, parseFloat(sem.c)||0);
+    if(h>0){ pts=g*h; hrs=h; }
+  } else {
+    (sem.d||[]).forEach(i=>{
+      const row = SC_GRADES.find(x=> x.g===i.g);
+      const c = parseFloat(i.c)||0;
+      if(row && c>0){ pts+=row.pts*c; hrs+=c; }
+    });
+  }
+  return {pts, hrs, gpa: hrs>0 ? pts/hrs : null};
+}
+
+function calcYear(y){
+  const d = UD.gpaData[y];
+  if(!d) return {s1:null, s2:null, annual:null, pts:0, hrs:0, mode:'courses'};
+  if(d.annualMode){
+    const gpa = (d.annualGPA!=='' && d.annualGPA!==null && d.annualGPA!==undefined)
+      ? Math.min(4, Math.max(0, parseFloat(d.annualGPA)||0)) : null;
+    return {s1:null, s2:null, annual:gpa, pts:0, hrs:0, mode:'annual'};
+  }
+  const r1 = calcSem(d.s1);
+  const r2 = calcSem(d.s2); // ★ Year 6 now also uses s2 (FIX)
+  const tp = r1.pts+r2.pts, th = r1.hrs+r2.hrs;
+  return {s1:r1.gpa, s2:r2.gpa, annual: th>0 ? tp/th : null, pts:tp, hrs:th, mode:'courses'};
+}
+
+function calcCGPA(){
+  let t=0;
+  for(let y=1; y<=6; y++){
+    const r = calcYear(y);
+    if(r.annual!==null) t += r.annual * WT[y];
+  }
+  return t;
+}
+
+function completionWeight(){
+  let w=0;
+  for(let y=1; y<=6; y++){
+    const r = calcYear(y);
+    if(r.annual!==null) w += WT[y];
+  }
+  return w;
+}
+
+function standing(v){
+  if(!v || v<=0) return {label:t('noData'), cls:'bd-none', key:'noData'};
+  if(v>=3.5) return {label:'🏅 '+t('distinction'), cls:'bd-dist', key:'distinction'};
+  if(v>=3.0) return {label:'🎖 '+t('merit'), cls:'bd-merit', key:'merit'};
+  if(v>=2.0) return {label:'📋 '+t('pass'), cls:'bd-pass', key:'pass'};
+  return {label:'⚠️ '+t('atRisk'), cls:'bd-risk', key:'atRisk'};
+}
+
+function gClass(g){ return {A:'g-A','B+':'g-Bp',B:'g-B',C:'g-C',F:'g-F'}[g]||''; }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+/* ══════════════════════════════════════════ */
+/*            NAVIGATION / VIEWS             */
+/* ══════════════════════════════════════════ */
+let currentView = 'dashboard';
+
+window.sv = function(v, el, mobId){
+  currentView = v;
+  document.querySelectorAll('.view').forEach(e=> e.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(e=> e.classList.remove('active'));
+  document.querySelectorAll('.mob-tab').forEach(e=> e.classList.remove('active'));
+  document.getElementById('view-'+v)?.classList.add('active');
+  el?.classList.add('active');
+  document.getElementById('n-'+v)?.classList.add('active');
+  if(mobId) document.getElementById(mobId)?.classList.add('active');
+
+  // Mobile tab highlight
+  const tabMap = {dashboard:'mt-dashboard', whatif:'mt-whatif', leaderboard:'mt-leaderboard', profile:'mt-profile'};
+  if(tabMap[v]) document.getElementById(tabMap[v])?.classList.add('active');
+  if(v.startsWith('y')) document.getElementById('mt-years')?.classList.add('active');
+
+  if(v==='whatif') renderWhatIf();
+  if(v==='leaderboard') loadLB();
+  if(v==='profile') loadProfile();
+  if(v.startsWith('y') && v.length===2) updateYearView(parseInt(v[1]));
+
+  closeSB();
+};
+
+function closeSB(){
+  document.getElementById('sidebar')?.classList.remove('open');
+  document.getElementById('sb-overlay')?.classList.remove('open');
+}
+
+window.toggleSB = function(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sb-overlay').classList.toggle('open');
+};
+
+window.openYrSheet = function(){
+  const g = document.getElementById('yr-grid-btns'); g.innerHTML='';
+  for(let y=1; y<=6; y++){
+    const r = calcYear(y);
+    const d = document.createElement('div'); d.className='yr-btn';
+    d.innerHTML = '<span class="yn">'+y+'</span><span class="yw">'+(WT[y]*100).toFixed(0)+'% '+t('weight')+'</span><span class="yg">'+(r.annual!==null?r.annual.toFixed(2):t('noData'))+'</span>';
+    d.onclick = function(){ closeYrSheet(); sv('y'+y, null, null); };
+    g.appendChild(d);
+  }
+  document.getElementById('yr-sheet').classList.add('open');
+};
+
+window.closeYrSheet = function(){ document.getElementById('yr-sheet').classList.remove('open'); };
+/* ══════════════════════════════════════════ */
+/*         UPDATE SIDEBAR & STATS            */
+/* ══════════════════════════════════════════ */
+function updateSidebar(){
+  const cgpa = calcCGPA();
+  const s = standing(cgpa);
+  document.getElementById('s-name').textContent = UD.profile.name || (isGuest ? t('guestUser') : 'Student');
+  document.getElementById('s-id').textContent = isGuest ? t('guestId') : ('ID: '+(UD.profile.id||'—'));
+  document.getElementById('s-cgpa').textContent = cgpa.toFixed(3);
+  document.getElementById('s-standing').textContent = s.label.replace(/^[^\s]+\s/, '');
+  document.getElementById('mob-cgpa').textContent = cgpa.toFixed(3);
+  for(let y=1; y<=6; y++){
+    const r = calcYear(y);
+    const h = document.getElementById('yh'+y);
+    if(h) h.textContent = r.annual!==null ? r.annual.toFixed(2) : '';
+  }
+}
+
+function updateStats(){
+  const cgpa = calcCGPA();
+  let totalCred=0, compY=0, bestGPA=null, bestYr=null;
+  for(let y=1; y<=6; y++){
+    const r = calcYear(y);
+    totalCred += r.hrs;
+    if(r.annual!==null){
+      compY++;
+      if(bestGPA===null || r.annual>bestGPA){ bestGPA=r.annual; bestYr=y; }
+    }
+  }
+  const wt = completionWeight();
+  const s = standing(cgpa);
+
+  document.getElementById('st-cgpa').textContent = cgpa.toFixed(3);
+  document.getElementById('st-cred').textContent = totalCred;
+  document.getElementById('st-yrs').textContent = compY+'/6';
+  document.getElementById('st-prog').style.width = (compY/6*100)+'%';
+  document.getElementById('st-best').textContent = bestGPA!==null ? bestGPA.toFixed(2) : '—';
+  document.getElementById('st-bestl').textContent = bestYr ? (t('year')+' '+bestYr) : t('noDataYet');
+
+  // Partial bar
+  const pb = document.getElementById('partial-bar');
+  if(wt<1 && wt>0){
+    pb.style.display = 'flex';
+    pb.innerHTML = '<span>ℹ️</span><span>'+t('showingWeight')+' <strong>'+(wt*100).toFixed(0)+'% '+t('ofTotalWeight')+'</strong> ('+compY+'/6 '+t('yearsEntered')+'). '+t('cgpaWillChange')+'</span>';
+  } else { pb.style.display='none'; }
+
+  // Standing display
+  let stndHtml;
+  if(wt>=0.5) stndHtml = '<span class="badge '+s.cls+'" style="font-size:10px;padding:2px 9px">'+s.label+'</span>';
+  else if(wt>0) stndHtml = '<span class="badge bd-partial" style="font-size:10px;padding:2px 9px">📊 '+t('inProgress')+' ('+(wt*100).toFixed(0)+'% '+t('weight')+')</span>';
+  else stndHtml = '<span style="font-size:12px;color:var(--muted)">'+t('enterData')+'</span>';
+  document.getElementById('st-stnd').innerHTML = stndHtml;
+}
+
+/* ══════════════════════════════════════════ */
+/*           DASHBOARD TABLE                 */
+/* ══════════════════════════════════════════ */
+function updateDashTable(){
+  let html='', cgpa=0;
+  for(let y=1; y<=6; y++){
+    const r = calcYear(y);
+    if(r.annual!==null) cgpa += r.annual*WT[y];
+    const s1 = r.mode==='annual' ? '—' : (r.s1!==null ? r.s1.toFixed(2) : '—');
+    const s2 = r.mode==='annual' ? '—' : (r.s2!==null ? r.s2.toFixed(2) : '—');
+    const ann = r.annual!==null ? r.annual.toFixed(2) : '—';
+    const ct = r.annual!==null ? (r.annual*WT[y]).toFixed(3) : '—';
+    const annLabel = r.mode==='annual' ? '<span style="font-size:10px;color:var(--ok);font-weight:800;display:block">'+t('annualDirect')+'</span>' : '';
+    html += '<tr style="cursor:pointer" onclick="sv(\'y'+y+'\',document.getElementById(\'n-y'+y+'\'))">';
+    html += '<td class="cl">'+t('year')+' '+y+'</td>';
+    html += '<td>'+(WT[y]*100).toFixed(0)+'%</td>';
+    html += '<td class="'+(r.s1!==null&&r.mode==='courses'?'gv':'')+'">'+s1+'</td>';
+    html += '<td class="'+(r.s2!==null&&r.mode==='courses'?'gv':'')+'">'+s2+'</td>';
+    html += '<td style="font-weight:700">'+ann+annLabel+'</td>';
+    html += '<td class="'+(r.annual!==null?'cv':'')+'">'+ct+'</td>';
+    html += '</tr>';
+  }
+  document.getElementById('dash-tbody').innerHTML = html;
+  document.getElementById('dash-total').textContent = cgpa.toFixed(3);
+  const wt = completionWeight();
+  const s = standing(cgpa);
+  document.getElementById('dash-badge').innerHTML = wt>=0.5 ? '<span class="badge '+s.cls+'">'+s.label+'</span>' : '';
+}
+
+/* ══════════════════════════════════════════ */
+/*                CHART                      */
+/* ══════════════════════════════════════════ */
+function renderChart(){
+  const labels=[], data=[];
+  for(let y=1; y<=6; y++){
+    const r = calcYear(y);
+    labels.push(t('year')+' '+y);
+    data.push(r.annual!==null ? parseFloat(r.annual.toFixed(3)) : null);
+  }
+  const ctx = document.getElementById('gpa-chart').getContext('2d');
+  if(gpaChart) gpaChart.destroy();
+  const dk = document.documentElement.getAttribute('data-theme')==='dark';
+  gpaChart = new Chart(ctx, {
+    type:'bar',
+    data:{labels, datasets:[{
+      label:'Annual GPA', data,
+      backgroundColor: data.map(v=> v===null?'#e2e8f0':v>=3.5?'#10b981':v>=3.0?'#1a6fc4':v>=2.0?'#f59e0b':'#ef4444'),
+      borderRadius:7, borderSkipped:false
+    }]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{label:c=> c.raw!==null?'GPA: '+c.raw.toFixed(2):t('noData')}}
+      },
+      scales:{
+        y:{min:0,max:4,ticks:{stepSize:1,color:dk?'#7d91b0':'#6b7a99',font:{size:11}},grid:{color:dk?'#253349':'#e2e8f0'}},
+        x:{ticks:{color:dk?'#7d91b0':'#6b7a99',font:{size:11}},grid:{display:false}}
+      }
+    }
+  });
+}
+
+/* ══════════════════════════════════════════ */
+/*            YEAR VIEW RENDER               */
+/* ══════════════════════════════════════════ */
+function updateAllYears(){ for(let y=1;y<=6;y++) updateYearView(y); }
+
+function updateYearView(y){
+  const el = document.getElementById('view-y'+y);
+  if(!el) return;
+  const r = calcYear(y);
+  const dy = UD.gpaData[y];
+  const am = dy?.annualMode || false;
+  const annText = r.annual!==null
+    ? t('annualGPA')+': <strong>'+r.annual.toFixed(2)+'</strong> &nbsp;·&nbsp; '+t('contribution')+': <strong>'+(r.annual*WT[y]).toFixed(3)+'</strong>'
+    : t('noDataYet');
+
+  // Entry mode bar
+  const modeBar = '<div class="entry-mode-bar">'
+    + '<button class="em-btn '+(!am?'on':'')+'" onclick="setYearMode('+y+',false)">📊 '+t('courseByGrade')+'</button>'
+    + '<button class="em-btn '+(am?'on':'')+'" onclick="setYearMode('+y+',true)">✏️ '+t('annualDirect')+'</button>'
+    + '</div>';
+
+  let content = '';
+  if(am){
+    content = '<div class="annual-box">'
+      + '<div><label>'+t('annualGPALabel')+' (0.00 – 4.00)</label>'
+      + '<input id="ann-y'+y+'" type="number" step="0.01" min="0" max="4" value="'+esc(dy?.annualGPA||'')+'" placeholder="e.g. 3.25" onchange="setAnnualGPA('+y+',this)" onblur="clampInput(this,4)"></div>'
+      + '<div class="annual-info"><strong>'+t('annualInfo')+'</strong><br>'
+      + '<code>'+t('annualGPA')+' × '+(WT[y]*100).toFixed(0)+'%</code>'
+      + (r.annual!==null ? ' = <strong style="color:var(--ok)">'+(r.annual*WT[y]).toFixed(3)+'</strong>' : '')
+      + '</div></div>';
+  } else {
+    // ★ All years (including year 6) now have 2 semesters
+    const sems = [1, 2];
+    content = '<div class="sem-grid">' + sems.map(function(s){
+      return '<div class="sem-card" id="sc-y'+y+'-s'+s+'">' + buildSemInner(y,s) + '</div>';
+    }).join('') + '</div>';
+  }
+
+  el.innerHTML = '<div class="ph"><h1>'+t('year')+' '+y+'</h1><p>'+t('weight')+': '+(WT[y]*100).toFixed(0)+'% '+t('of')+' '+t('finalCGPA')+' &nbsp;·&nbsp; '+annText+'</p></div>'
+    + modeBar + content;
+}
+
+/* ══════════════════════════════════════════ */
+/*         SEMESTER INNER BUILD              */
+/* ══════════════════════════════════════════ */
+function buildSemInner(y,s){
+  const sem = UD.gpaData[y]['s'+s];
+  const r = calcYear(y);
+  const gpa = s===1 ? r.s1 : r.s2;
+  const gpaHtml = gpa!==null ? '<span class="sem-gpa">'+gpa.toFixed(2)+'</span>' : '';
+  const inner = sem.m ? buildManual(y,s,sem) : buildCourseTable(y,s,sem);
+
+  return '<div class="sem-hdr">'
+    + '<div class="sem-title">'+t('semester')+' '+s+'</div>'
+    + '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">'
+    + gpaHtml
+    + '<button class="import-btn" onclick="openImpSheet('+y+','+s+')">📋 '+t('importCourses').replace('📋 ','')+'</button>'
+    + '<button class="btn-toggle" onclick="toggleM('+y+','+s+')">'+(sem.m ? '📝 '+t('courseByGrade') : '✏️ '+t('manualGPA'))+'</button>'
+    + '</div></div>' + inner;
+}
+
+function buildManual(y,s,sem){
+  return '<div class="manual-box">'
+    + '<div><label>'+t('manualGPALabel')+' (0.00 – 4.00)</label>'
+    + '<input type="number" step="0.01" min="0" max="4" value="'+esc(sem.g||'')+'" placeholder="e.g. 3.75" onchange="upM('+y+','+s+',\'g\',this.value)" onblur="clampInput(this,4)"></div>'
+    + '<div><label>'+t('manualHrsLabel')+'</label>'
+    + '<input type="number" min="0" value="'+esc(sem.c||'')+'" placeholder="e.g. 20" onchange="upM('+y+','+s+',\'c\',this.value)"></div>'
+    + '</div>';
+}
+
+function buildCourseTable(y,s,sem){
+  let rows = '';
+  (sem.d||[]).forEach(function(i, idx){
+    const pts = SC_GRADES.find(function(x){ return x.g===i.g; });
+    rows += '<tr>'
+      + '<td style="text-align:left"><input type="text" value="'+esc(i.n||'')+'" placeholder="'+t('course')+'" oninput="udName('+y+','+s+','+idx+',this.value)" onblur="scheduleSave()"></td>'
+      + '<td><input type="number" value="'+esc(i.c||'')+'" placeholder="3" min="0" max="12" style="max-width:58px" onchange="upD('+y+','+s+','+idx+',\'c\',this.value)"></td>'
+      + '<td><input type="text" value="'+esc(i.p||'')+'" placeholder="e.g.75" style="max-width:63px" onchange="syncF('+y+','+s+','+idx+',\'p\',this.value)"></td>'
+      + '<td><select onchange="syncF('+y+','+s+','+idx+',\'g\',this.value)">'
+      + '<option value="">—</option>'
+      + SC_GRADES.map(function(x){ return '<option value="'+x.g+'"'+(i.g===x.g?' selected':'')+'>'+x.g+'</option>'; }).join('')
+      + '</select></td>'
+      + '<td class="'+gClass(i.g)+'">'+(pts ? pts.pts.toFixed(1) : '—')+'</td>'
+      + '<td><button class="btn-del" onclick="delD('+y+','+s+','+idx+')" title="'+t('remove')+'">✕</button></td>'
+      + '</tr>';
+  });
+
+  return '<div class="tbl-scroll"><table class="course-tbl">'
+    + '<thead><tr><th style="text-align:left">'+t('course')+'</th><th>'+t('creditHours')+'</th><th>Score%</th><th>'+t('grade')+'</th><th>'+t('points')+'</th><th></th></tr></thead>'
+    + '<tbody>'+rows+'</tbody></table></div>'
+    + '<button class="btn-add-c" onclick="addD('+y+','+s+')">＋ '+t('addCourse')+'</button>';
+}
+
+/* ══════════════════════════════════════════ */
+/*      TARGETED SEMESTER REFRESH            */
+/* ══════════════════════════════════════════ */
+function refreshSem(y,s){
+  const el = document.getElementById('sc-y'+y+'-s'+s);
+  if(el) el.innerHTML = buildSemInner(y,s);
+  // Update year header
+  const yEl = document.getElementById('view-y'+y);
+  if(yEl){
+    const ph = yEl.querySelector('.ph p');
+    if(ph){
+      const r = calcYear(y);
+      const annText = r.annual!==null
+        ? t('annualGPA')+': <strong>'+r.annual.toFixed(2)+'</strong> &nbsp;·&nbsp; '+t('contribution')+': <strong>'+(r.annual*WT[y]).toFixed(3)+'</strong>'
+        : t('noDataYet');
+      ph.innerHTML = t('weight')+': '+(WT[y]*100).toFixed(0)+'% '+t('of')+' '+t('finalCGPA')+' &nbsp;·&nbsp; '+annText;
+    }
+  }
+  updateSidebar(); updateStats(); updateDashTable();
+}
+
+/* ══════════════════════════════════════════ */
+/*           DATA HANDLERS (V4 compat)       */
+/* ══════════════════════════════════════════ */
+window.clampInput = function(el, max){
+  let v = parseFloat(el.value);
+  if(isNaN(v)) return;
+  if(v > max){ el.value = max; }
+  if(v < 0){ el.value = 0; }
+};
+
+window.setYearMode = function(y, annual){
+  UD.gpaData[y].annualMode = annual;
+  updateYearView(y);
+  updateSidebar(); updateStats(); updateDashTable();
+  scheduleSave();
+};
+
+window.setAnnualGPA = function(y, el){
+  let val = parseFloat(el.value);
+  if(isNaN(val)){ UD.gpaData[y].annualGPA = ''; }
+  else {
+    val = Math.min(4, Math.max(0, val));
+    el.value = val;
+    UD.gpaData[y].annualGPA = val;
+  }
+  updateYearView(y);
+  updateSidebar(); updateStats(); updateDashTable();
+  scheduleSave();
+};
+
+// Name update (no re-render while typing)
+window.udName = function(y,s,idx,v){ UD.gpaData[y]['s'+s].d[idx].n = v; };
+
+window.upD = function(y,s,idx,f,v){
+  UD.gpaData[y]['s'+s].d[idx][f] = v;
+  refreshSem(y,s); scheduleSave();
+};
+
+window.syncF = function(y,s,idx,f,v){
+  const row = UD.gpaData[y]['s'+s].d[idx];
+  if(f==='p'){
+    const n = parseFloat(v);
+    const found = isNaN(n) ? null : SC_GRADES.find(function(x){
+      if(x.g==='A') return n>=80;
+      if(x.g==='B+') return n>=70 && n<80;
+      if(x.g==='B') return n>=60 && n<70;
+      if(x.g==='C') return n>=50 && n<60;
+      if(x.g==='F') return n<50;
+      return false;
+    });
+    row.g = found ? found.g : '';
+    row.p = v;
+  } else {
+    const found = SC_GRADES.find(function(x){ return x.g===v; });
+    row.p = found ? found.r : '';
+    row.g = v;
+  }
+  refreshSem(y,s); scheduleSave();
+};
+
+window.addD = function(y,s){
+  UD.gpaData[y]['s'+s].d.push({n:'', c:'', p:'', g:''});
+  refreshSem(y,s); scheduleSave();
+};
+
+window.delD = function(y,s,idx){
+  showConfirm(t('areYouSure'), function(){
+    UD.gpaData[y]['s'+s].d.splice(idx,1);
+    refreshSem(y,s); scheduleSave();
+    toast(t('remove')+' ✓', 'inf');
+  }, t('delete'));
+};
+
+window.toggleM = function(y,s){
+  UD.gpaData[y]['s'+s].m = !UD.gpaData[y]['s'+s].m;
+  refreshSem(y,s); scheduleSave();
+};
+
+window.upM = function(y,s,f,v){
+  if(f==='g') v = Math.min(4, Math.max(0, parseFloat(v)||0));
+  if(f==='c') v = Math.max(0, parseFloat(v)||0);
+  UD.gpaData[y]['s'+s][f] = v;
+  refreshSem(y,s); scheduleSave();
+};
+
+/* ══════════════════════════════════════════ */
+/*           IMPORT COURSES (fixed)          */
+/* ══════════════════════════════════════════ */
+let parsedCourses = [];
+
+window.openImpSheet = function(y,s){
+  impTarget = {y,s};
+  parsedCourses = [];
+  document.getElementById('imp-ta').value = '';
+  document.getElementById('imp-preview').style.display = 'none';
+  document.getElementById('imp-ok-btn').disabled = true;
+  document.getElementById('imp-ok-btn').style.opacity = '.5';
+  document.getElementById('imp-sheet').classList.add('open');
+};
+
+window.closeImpSheet = function(){ document.getElementById('imp-sheet').classList.remove('open'); };
+
+window.parseImport = function(){
+  const lines = document.getElementById('imp-ta').value.split('\n');
+  parsedCourses = [];
+  lines.forEach(function(line){
+    line = line.trim();
+    if(!line || line.startsWith('#')) return;
+    // Skip empty-ish lines
+    if(line === ',' || line === '-' || line === '.') return;
+
+    let name='', hrs=null;
+    // Format: "Name, 3" or "Name: 3" or "Name\t3"
+    const m1 = line.match(/^(.+?)[\s]*[,:\t][\s]*(\d+(?:\.\d+)?)[\s]*$/);
+    // Format: "3 Name"
+    const m2 = line.match(/^(\d+(?:\.\d+)?)\s+(.+)$/);
+    // Format: "Name 3" (number at end)
+    const m3 = line.match(/^(.+?)\s+(\d+(?:\.\d+)?)$/);
+
+    if(m1){ name=m1[1].trim(); hrs=parseFloat(m1[2]); }
+    else if(m2){ hrs=parseFloat(m2[1]); name=m2[2].trim(); }
+    else if(m3){
+      // Only match if the last part is really just a number (1-20 range)
+      const h = parseFloat(m3[2]);
+      if(h>0 && h<=20){ name=m3[1].trim(); hrs=h; }
+      else { name=line; hrs=null; }
+    }
+    else { name=line; hrs=null; }
+
+    // Validate name is not empty or just a number
+    if(name && !/^\d+(\.\d+)?$/.test(name)){
+      parsedCourses.push({n:name, c:hrs||'', p:'', g:''});
+    }
+  });
+
+  const cnt = parsedCourses.length;
+  const prev = document.getElementById('imp-preview');
+  const okBtn = document.getElementById('imp-ok-btn');
+  document.getElementById('imp-count').textContent = cnt;
+  document.getElementById('imp-ok-count').textContent = cnt;
+
+  if(cnt>0){
+    prev.style.display = 'block';
+    document.getElementById('imp-rows').innerHTML = parsedCourses.map(function(c){
+      return '<div class="imp-row"><span>'+esc(c.n)+'</span><span style="font-weight:700;color:var(--primary)">'+(c.c||'?')+' hrs</span></div>';
+    }).join('');
+    okBtn.disabled = false; okBtn.style.opacity = '1';
+  } else {
+    prev.style.display = 'none'; okBtn.disabled = true; okBtn.style.opacity = '.5';
+  }
+};
+
+window.confirmImport = function(){
+  if(!parsedCourses.length) return;
+  const {y,s} = impTarget;
+  parsedCourses.forEach(function(c){
+    UD.gpaData[y]['s'+s].d.push({...c});
+  });
+  closeImpSheet(); refreshSem(y,s); scheduleSave();
+  toast(parsedCourses.length+' courses imported!', 'ok');
+};
+/* ══════════════════════════════════════════ */
+/*        WHAT-IF (V4 compatible, fixed)     */
+/* ══════════════════════════════════════════ */
+function initWiState(){
+  for(let y=1; y<=6; y++){
+    const r = calcYear(y);
+    const hasData = r.annual !== null;
+    if(!wiState[y]) wiState[y] = {mode: hasData?'actual':'custom', val: hasData?r.annual.toFixed(2):''};
+    else if(hasData && wiState[y].mode==='actual'){ wiState[y].val = r.annual.toFixed(2); }
+  }
+}
+
+function renderWhatIf(){
+  initWiState();
+  let html = '';
+  for(let y=1; y<=6; y++){
+    const r = calcYear(y);
+    const hasData = r.annual !== null;
+    const st = wiState[y];
+    const isCustom = st.mode === 'custom';
+
+    html += '<div class="wi-card '+(isCustom?'custom-mode':'actual-mode')+'" id="wi-card-'+y+'">';
+    html += '<div class="wi-head">';
+    html += '<div><div class="wi-label">'+t('year')+' '+y+'</div><span class="wi-wt">'+(WT[y]*100).toFixed(0)+'%</span></div>';
+    html += '<div class="wi-mode-btns">';
+    html += '<button class="wi-mode-btn '+(!isCustom?'on':'')+'" onclick="setWiMode('+y+',\'actual\')" '+(! hasData?'disabled title="'+t('noData')+'"':'')+'>'+t('actual')+'</button>';
+    html += '<button class="wi-mode-btn '+(isCustom?'on':'')+'" onclick="setWiMode('+y+',\'custom\')">'+t('custom')+'</button>';
+    html += '</div></div>';
+
+    if(isCustom){
+      html += '<input class="wi-input" id="wi-in-'+y+'" type="number" min="0" max="4" step="0.01" value="'+esc(st.val)+'" placeholder="0.00 – 4.00" oninput="onWiType('+y+',this.value)" onblur="clampWiInput(this,'+y+')">';
+    } else {
+      html += '<div class="wi-actual-val">'+(hasData?r.annual.toFixed(2):'—')+'</div>';
+      html += '<div class="wi-actual-sub">'+(hasData?t('fromData'):t('noData'))+'</div>';
+    }
+    html += '</div>';
+  }
+  document.getElementById('wi-grid').innerHTML = html;
+  calcWiResult();
+}
+
+// Called when user types — NO DOM rebuild, just math
+window.onWiType = function(y,v){ wiState[y].val = v; calcWiResult(); };
+
+// Clamp value on blur
+window.clampWiInput = function(el,y){
+  let v = parseFloat(el.value);
+  if(isNaN(v)){ el.value = '0'; wiState[y].val = '0'; }
+  else {
+    if(v > 4){ v = 4; el.value = '4'; }
+    if(v < 0){ v = 0; el.value = '0'; }
+    wiState[y].val = v.toString();
+  }
+  calcWiResult();
+};
+
+// Called when mode button clicked — update only that card
+window.setWiMode = function(y, mode){
+  const r = calcYear(y);
+  const hasData = r.annual !== null;
+  if(mode==='actual' && !hasData) return;
+  wiState[y].mode = mode;
+  if(mode==='actual' && hasData) wiState[y].val = r.annual.toFixed(2);
+
+  // Only rebuild this one card
+  const card = document.getElementById('wi-card-'+y);
+  if(!card) return;
+  const st = wiState[y];
+  const isCustom = st.mode === 'custom';
+  card.className = 'wi-card '+(isCustom?'custom-mode':'actual-mode');
+  card.querySelector('.wi-mode-btns').querySelectorAll('button').forEach(function(b,i){
+    b.classList.toggle('on', (i===0 && !isCustom) || (i===1 && isCustom));
+  });
+  // Replace content below header
+  while(card.children.length > 1) card.removeChild(card.lastChild);
+  if(isCustom){
+    card.insertAdjacentHTML('beforeend',
+      '<input class="wi-input" id="wi-in-'+y+'" type="number" min="0" max="4" step="0.01" value="'+esc(st.val)+'" placeholder="0.00 – 4.00" oninput="onWiType('+y+',this.value)" onblur="clampWiInput(this,'+y+')">');
+  } else {
+    card.insertAdjacentHTML('beforeend',
+      '<div class="wi-actual-val">'+(hasData?r.annual.toFixed(2):'—')+'</div>'
+      + '<div class="wi-actual-sub">'+(hasData?t('fromData'):t('noData'))+'</div>');
+  }
+  calcWiResult();
+};
+
+window.resetWhatIf = function(){ wiState = {}; renderWhatIf(); toast(t('resetAll'),'inf'); };
+
+function calcWiResult(){
+  let total = 0;
+  for(let y=1; y<=6; y++){
+    const r = calcYear(y);
+    const st = wiState[y] || {};
+    const isCustom = st.mode==='custom' || (r.annual===null);
+    if(isCustom){ total += Math.min(4, Math.max(0, parseFloat(st.val)||0)) * WT[y]; }
+    else if(r.annual!==null){ total += r.annual * WT[y]; }
+  }
+  document.getElementById('wi-out').textContent = total.toFixed(3);
+  const s = standing(total);
+  const real = calcCGPA();
+  const diff = total - real;
+  document.getElementById('wi-delta').innerHTML = '<span class="badge '+s.cls+'">'+s.label+'</span>'
+    + ' <span style="color:'+(diff>=0?'var(--ok)':'var(--danger)')+'">'+
+    (diff>=0 ? '▲ +'+diff.toFixed(3) : '▼ '+diff.toFixed(3))+' '+t('vsActual')+'</span>';
+}
+
+/* ══════════════════════════════════════════ */
+/*       LEADERBOARD (V4 shared_profiles)    */
+/* ══════════════════════════════════════════ */
+window.loadLB = async function(){
+  // My status bar
+  const statusBar = document.getElementById('lb-my-status-bar');
+  if(isGuest){
+    statusBar.innerHTML = '<div class="lb-my-status">👤 '+t('guestWarning')+'</div>';
+    document.getElementById('lb-list').innerHTML = '<div class="lb-empty"><span style="font-size:48px;display:block;margin-bottom:12px">🔒</span>'+t('guestWarning')+'<div style="font-size:13px;margin-top:8px">'+t('createAccountSync')+'</div></div>';
+    document.getElementById('lb-count-txt').textContent = '';
+    document.getElementById('lb-filters').innerHTML = '';
+    return;
+  }
+
+  if(!UD.sharing?.enabled){
+    statusBar.innerHTML = '<div class="lb-my-status">'
+      + '<span>⚠️ '+t('lbNotSharing')+' '+t('lbGoProfile')+'</span>'
+      + '<button onclick="quickEnableSharing()">'+t('lbEnableSharing')+'</button>'
+      + '</div>';
+  } else {
+    statusBar.innerHTML = '';
+  }
+
+  document.getElementById('lb-list').innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted)">⏳ '+t('loading')+'</div>';
+
+  try{
+    const snap = await getDocs(collection(db,'shared_profiles'));
+    lbData = [];
+    snap.forEach(function(d){ lbData.push({id:d.id, ...d.data()}); });
+    buildLbFilters();
+    renderLB();
+
+    // Update my status if sharing
+    if(UD.sharing?.enabled){
+      const myIdx = lbData.findIndex(function(d){ return d.id === CU.uid; });
+      if(myIdx >= 0){
+        const myEntry = lbData.filter(function(d){ return true; }).sort(function(a,b){ return (b.cgpa||0)-(a.cgpa||0); });
+        const myRank = myEntry.findIndex(function(d){ return d.id === CU.uid; }) + 1;
+        statusBar.innerHTML = '<div class="lb-my-status" style="border-color:var(--ok);background:var(--ob)">'
+          + '✅ '+t('lbYourRank')+': <strong>#'+myRank+'</strong> '+t('of')+' '+lbData.length+' — CGPA: <strong>'+(lbData[myIdx].cgpa||0).toFixed(3)+'</strong>'
+          + '</div>';
+      }
+    }
+  }catch(e){
+    console.error('Leaderboard error:', e);
+    document.getElementById('lb-list').innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted)">⚠️ Could not load rankings.</div>';
+  }
+};
+
+function buildLbFilters(){
+  const allYrs = new Set([0]);
+  lbData.forEach(function(p){ (p.yearsShared||[]).forEach(function(y){ allYrs.add(y); }); });
+  let html = '<button class="lb-filter'+(lbFilter===0?' active':'')+'" onclick="setLbF(0)">'+t('allStandings')+' (CGPA)</button>';
+  [1,2,3,4,5,6].forEach(function(y){
+    if(allYrs.has(y))
+      html += '<button class="lb-filter'+(lbFilter===y?' active':'')+'" onclick="setLbF('+y+')">'+t('year')+' '+y+'</button>';
+  });
+  document.getElementById('lb-filters').innerHTML = html;
+}
+
+window.setLbF = function(y){ lbFilter=y; buildLbFilters(); renderLB(); };
+
+window.renderLB = function(){
+  const q = (document.getElementById('lb-search')?.value||'').toLowerCase();
+  let filtered = lbData.filter(function(p){
+    if(lbFilter!==0 && !(p.yearsShared||[]).includes(lbFilter)) return false;
+    if(q && !(p.displayName||'').toLowerCase().includes(q) && !(p.studentId||'').toLowerCase().includes(q)) return false;
+    return true;
+  });
+
+  filtered.sort(function(a,b){
+    const av = lbFilter===0 ? (a.cgpa||0) : (a.yearData?.[lbFilter]?.annual||0);
+    const bv = lbFilter===0 ? (b.cgpa||0) : (b.yearData?.[lbFilter]?.annual||0);
+    return bv - av;
+  });
+
+  const cnt = filtered.length;
+  document.getElementById('lb-count-txt').textContent = cnt+' '+t('lbStudents');
+
+  if(!cnt){
+    document.getElementById('lb-list').innerHTML = '<div class="lb-empty">'
+      + '<span style="font-size:48px;display:block;margin-bottom:12px">🏅</span>'
+      + t('lbEmpty')
+      + '<div style="font-size:13px;margin-top:8px">'+t('lbGoProfile')+'</div>'
+      + '</div>';
+    return;
+  }
+
+  let html = '';
+  filtered.forEach(function(p, i){
+    const rank = i+1;
+    const gpaVal = lbFilter===0 ? (p.cgpa||0) : (p.yearData?.[lbFilter]?.annual||0);
+    const s = standing(gpaVal);
+    const isMe = CU && p.id===CU.uid;
+    const rkC = rank===1?'r1':rank===2?'r2':rank===3?'r3':'';
+    const med = rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':'';
+    const canD = p.showCourses || (Object.keys(p.yearData||{}).length > 0);
+
+    html += '<div class="lb-row'+(isMe?' me':'')+'" onclick="'+(canD?'openDetail(\''+p.id+'\')':'')+'" style="'+(canD?'':'cursor:default')+'">';
+    html += '<div class="lb-rank '+rkC+'">'+(med||rank)+'</div>';
+    html += '<div class="lb-info">';
+    html += '<div class="lb-name">'+esc(p.displayName||'—')+(isMe?' <span style="font-size:11px;color:var(--gold);font-weight:800">(You)</span>':'')+'</div>';
+    html += '<div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:3px;align-items:center">';
+    if(p.studentId) html += '<span style="font-size:11px;color:var(--muted)">ID: '+esc(p.studentId)+'</span>';
+    html += '<span class="badge '+s.cls+'" style="font-size:10px;padding:2px 8px">'+s.label+'</span>';
+    html += '</div></div>';
+    html += '<div style="text-align:right">';
+    html += '<div class="lb-gpa">'+(gpaVal>0?gpaVal.toFixed(2):'—')+'</div>';
+    html += '<div class="lb-gpa-sub">'+(lbFilter===0?'CGPA':t('year')+' '+lbFilter)+'</div>';
+    if(canD) html += '<div style="font-size:10px;color:var(--primary);margin-top:2px">View →</div>';
+    html += '</div></div>';
+  });
+  document.getElementById('lb-list').innerHTML = html;
+};
+
+window.quickEnableSharing = async function(){
+  UD.sharing.enabled = true;
+  await save();
+  await syncPublicProfile();
+  toast(t('sharingUpdated'), 'ok');
+  loadLB();
+};
+
+/* ══════════════════════════════════════════ */
+/*         DETAIL MODAL (V4 compat)          */
+/* ══════════════════════════════════════════ */
+window.openDetail = function(uid){
+  const p = lbData.find(function(x){ return x.id===uid; });
+  if(!p) return;
+  const cgpa = p.cgpa||0;
+  const s = standing(cgpa);
+  document.getElementById('dm-name').textContent = p.displayName || '—';
+  document.getElementById('dm-meta').innerHTML = 'CGPA: <strong>'+cgpa.toFixed(3)+'</strong> &nbsp;<span class="badge '+s.cls+'" style="font-size:10px">'+s.label+'</span>'
+    + (p.studentId ? ' &nbsp; ID: '+esc(p.studentId) : '');
+
+  const yrs = Object.entries(p.yearData||{}).filter(function(e){ return e[1].annual!==null; });
+  if(!yrs.length){
+    document.getElementById('dm-body').innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted)">'+t('noData')+'</div>';
+  } else {
+    let html = '';
+    yrs.forEach(function(entry){
+      const yr = entry[0], d = entry[1];
+      const ys = standing(d.annual||0);
+      html += '<div class="detail-yr">';
+      html += '<div style="display:flex;justify-content:space-between;font-weight:700;font-size:13.5px;margin-bottom:6px">';
+      html += '<span>'+t('year')+' '+yr+' ('+(WT[parseInt(yr)]*100).toFixed(0)+'%)</span>';
+      html += '<span class="badge '+ys.cls+'" style="font-size:10px">'+(d.annual||0).toFixed(2)+'</span></div>';
+      html += '<div style="display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted)">';
+      html += '<span>Sem 1: '+(d.s1!==null ? (d.s1||0).toFixed(2) : '—')+'</span>';
+      html += '<span>Sem 2: '+(d.s2!==null ? (d.s2||0).toFixed(2) : '—')+'</span>';
+      html += '<span>'+(d.hrs||0)+' '+t('creditHours')+'</span></div>';
+
+      // Show courses if available
+      if(p.showCourses && d.courses){
+        html += buildCourseSummary(d.courses, yr);
+      }
+      html += '</div>';
+    });
+    document.getElementById('dm-body').innerHTML = html;
+  }
+  document.getElementById('detail-modal').classList.add('open');
+};
+
+function buildCourseSummary(courses, yr){
+  let html = '<div style="margin-top:8px">';
+  [1,2].forEach(function(s){
+    const sem = courses['s'+s];
+    if(!sem || (!sem.d?.length && !sem.m)) return;
+    html += '<div style="font-size:11px;font-weight:700;color:var(--muted);margin:6px 0 3px">'+t('semester')+' '+s+'</div>';
+    if(sem.m){
+      html += '<div style="font-size:12px">'+t('manualGPA')+': GPA '+sem.g+', '+sem.c+' '+t('creditHours')+'</div>';
+    } else {
+      (sem.d||[]).forEach(function(c){
+        if(!c.g) return;
+        html += '<div style="display:flex;justify-content:space-between;font-size:12px;padding:2px 0">'
+          + '<span>'+esc(c.n||t('course'))+'</span>'
+          + '<span class="'+gClass(c.g)+'">'+c.g+'</span></div>';
+      });
+    }
+  });
+  return html + '</div>';
+}
+
+/* ══════════════════════════════════════════ */
+/*          PROFILE (V4 compatible)          */
+/* ══════════════════════════════════════════ */
+function loadProfile(){
+  document.getElementById('p-name').value = UD.profile.name || '';
+  document.getElementById('p-id').value = UD.profile.id || '';
+
+  document.getElementById('security-card').style.display = isGuest ? 'none' : 'block';
+  document.getElementById('share-section-wrap').style.display = isGuest ? 'none' : 'block';
+
+  if(!isGuest) renderShareUI();
+}
+
+window.updateProfile = async function(){
+  UD.profile.name = document.getElementById('p-name').value.trim();
+  UD.profile.id = document.getElementById('p-id').value.trim();
+  await save();
+  updateSidebar();
+  toast(t('profileUpdated'), 'ok');
+};
+
+window.changePw = function(){
+  if(isGuest) return;
+  const p = document.getElementById('p-newpass').value;
+  if(p.length < 6) return toast(t('completeAllFields'), 'err');
+  updatePassword(CU, p)
+    .then(function(){ toast(t('passwordChanged')); document.getElementById('p-newpass').value=''; })
+    .catch(function(){ toast('Please sign out and sign in again first.', 'err'); });
+};
+
+/* ══════════════════════════════════════════ */
+/*         SHARING UI (V4 compatible)        */
+/* ══════════════════════════════════════════ */
+function renderShareUI(){
+  const sh = UD.sharing || {};
+  document.getElementById('share-toggle').checked = !!sh.enabled;
+  toggleShareUI();
+  renderShareYears();
+}
+
+window.toggleShare = function(){ toggleShareUI(); };
+
+function toggleShareUI(){
+  const on = document.getElementById('share-toggle').checked;
+  document.getElementById('share-yr-section').style.display = on ? 'block' : 'none';
+}
+
+function renderShareYears(){
+  const container = document.getElementById('share-yr-checks');
+  const shared = UD.sharing?.years || [1,2,3,4,5,6];
+  container.innerHTML = '';
+  for(let y=1; y<=6; y++){
+    const checked = shared.includes(y);
+    const label = document.createElement('label');
+    label.className = 'yr-check' + (checked ? ' checked' : '');
+    label.innerHTML = '<input type="checkbox" '+(checked?'checked':'')+' onchange="this.closest(\'.yr-check\').classList.toggle(\'checked\',this.checked)" data-yr="'+y+'"> '+t('year')+' '+y;
+    container.appendChild(label);
+  }
+}
+
+window.saveSharing = async function(){
+  if(isGuest) return;
+  const yChecks = document.querySelectorAll('#share-yr-checks input[type=checkbox]');
+  const years = [];
+  yChecks.forEach(function(c){ if(c.checked) years.push(parseInt(c.dataset.yr)); });
+
+  UD.sharing = {
+    enabled: document.getElementById('share-toggle').checked,
+    showName: true,
+    showId: true,
+    showCourses: false,
+    years: years.length ? years : [1,2,3,4,5,6]
+  };
+  await save();
+  await syncPublicProfile();
+  toast(t('sharingUpdated'), 'ok');
+};
+
+/* ══════════════════════════════════════════ */
+/*     SYNC PUBLIC PROFILE (V4 compat)       */
+/* ══════════════════════════════════════════ */
+async function syncPublicProfile(){
+  if(isGuest || !CU) return;
+  if(!UD.sharing?.enabled){
+    await deleteDoc(doc(db,'shared_profiles',CU.uid)).catch(function(){});
+    return;
+  }
+  const sh = UD.sharing;
+  const yrs = sh.years || [1,2,3,4,5,6];
+  const yearData = {};
+  let cgpa = 0;
+  for(let y=1; y<=6; y++){
+    const r = calcYear(y);
+    if(r.annual!==null) cgpa += r.annual * WT[y];
+    if(!yrs.includes(y)) continue;
+    yearData[y] = {annual:r.annual, s1:r.s1, s2:r.s2, hrs:r.hrs};
+    if(sh.showCourses) yearData[y].courses = UD.gpaData[y];
+  }
+  await setDoc(doc(db,'shared_profiles',CU.uid), {
+    displayName: sh.showName ? (UD.profile.name||'Student') : ('Student #'+(UD.profile.id||'?')),
+    studentId: sh.showId ? (UD.profile.id||null) : null,
+    cgpa: cgpa,
+    yearData: yearData,
+    yearsShared: yrs,
+    showCourses: sh.showCourses || false,
+    uid: CU.uid,
+    updatedAt: new Date().toISOString()
+  });
+}
+
+/* ══════════════════════════════════════════ */
+/*            DANGER ZONE                    */
+/* ══════════════════════════════════════════ */
+window.confirmResetAll = function(){
+  showConfirm(t('resetConfirm'), async function(){
+    const name = UD.profile.name;
+    const id = UD.profile.id;
+    UD = defaultUD();
+    UD.profile.name = name;
+    UD.profile.id = id;
+    await save();
+    if(!isGuest){
+      await deleteDoc(doc(db,'shared_profiles',CU.uid)).catch(function(){});
+    }
+    fullRender();
+    toast(t('dataReset'), 'ok');
+  });
+};
+/* ══════════════════════════════════════════ */
+/*          SCREENSHOT / SNAPSHOT            */
+/* ══════════════════════════════════════════ */
+window.openSnapModal = function(){
+  const checks = document.getElementById('snap-checks');
+  let html = '';
+  html += '<label class="snap-check checked"><input type="checkbox" checked value="name" onchange="this.parentElement.classList.toggle(\'checked\',this.checked)"> '+t('snapName')+'</label>';
+  html += '<label class="snap-check checked"><input type="checkbox" checked value="uid" onchange="this.parentElement.classList.toggle(\'checked\',this.checked)"> '+t('snapId')+'</label>';
+  html += '<label class="snap-check checked"><input type="checkbox" checked value="summary" onchange="this.parentElement.classList.toggle(\'checked\',this.checked)"> '+t('snapSummary')+'</label>';
+  for(let y=1; y<=6; y++){
+    const r = calcYear(y);
+    const has = r.annual !== null;
+    html += '<label class="snap-check '+(has?'checked':'')+'"><input type="checkbox" '+(has?'checked':'')+' value="y'+y+'" onchange="this.parentElement.classList.toggle(\'checked\',this.checked)"> '+t('snapYear')+' '+y+(has?'':' ('+t('noData')+')')+'</label>';
+  }
+  checks.innerHTML = html;
+  document.getElementById('snap-modal').classList.add('open');
+};
+
+window.closeSnapModal = function(){
+  document.getElementById('snap-modal').classList.remove('open');
+};
+
+window.generateSnapshot = async function(){
+  closeSnapModal();
+
+  const checks = document.querySelectorAll('#snap-checks input[type="checkbox"]');
+  const sel = {};
+  checks.forEach(function(c){ sel[c.value] = c.checked; });
+
+  const cgpa = calcCGPA();
+  const s = standing(cgpa);
+  const render = document.getElementById('snap-render');
+
+  let html = '';
+
+  // Header
+  html += '<div class="snap-header">';
+  html += '<h2>🎓 Bahri University — CGPA Report</h2>';
+  if(sel.name) html += '<p style="font-size:16px;font-weight:700;margin-top:8px">'+esc(UD.profile.name||'Student')+'</p>';
+  if(sel.uid && UD.profile.id) html += '<p style="font-size:13px;color:#6b7a99">ID: '+esc(UD.profile.id)+'</p>';
+  html += '</div>';
+
+  // Summary table
+  if(sel.summary){
+    let compY = 0;
+    for(let y=1;y<=6;y++){ if(calcYear(y).annual!==null) compY++; }
+
+    html += '<div class="snap-stat">';
+    html += '<div><div style="font-size:10px;color:#6b7a99;font-weight:700;text-transform:uppercase">CGPA</div>';
+    html += '<div style="font-family:\'Playfair Display\',serif;font-size:32px;color:#1a6fc4">'+cgpa.toFixed(3)+'</div></div>';
+    html += '<div><div style="font-size:10px;color:#6b7a99;font-weight:700;text-transform:uppercase">'+t('yearsComplete')+'</div>';
+    html += '<div style="font-family:\'Playfair Display\',serif;font-size:32px;color:#0d2240">'+compY+'/6</div></div>';
+    html += '<div><div style="font-size:10px;color:#6b7a99;font-weight:700;text-transform:uppercase">Standing</div>';
+    html += '<div style="font-size:18px;font-weight:700;margin-top:6px">'+s.label+'</div></div>';
+    html += '</div>';
+
+    // Record table
+    html += '<table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px">';
+    html += '<thead><tr style="background:#0d2240;color:rgba(255,255,255,.85)">';
+    html += '<th style="padding:8px 10px;text-align:left">'+t('year')+'</th>';
+    html += '<th style="padding:8px 10px;text-align:center">'+t('weight')+'</th>';
+    html += '<th style="padding:8px 10px;text-align:center">Sem 1</th>';
+    html += '<th style="padding:8px 10px;text-align:center">Sem 2</th>';
+    html += '<th style="padding:8px 10px;text-align:center">'+t('annualGPA')+'</th>';
+    html += '<th style="padding:8px 10px;text-align:center">'+t('contribution')+'</th>';
+    html += '</tr></thead><tbody>';
+
+    for(let y=1; y<=6; y++){
+      const r = calcYear(y);
+      const w = WT[y];
+      const contrib = r.annual!==null ? (r.annual * w).toFixed(3) : '—';
+      html += '<tr style="border-bottom:1px solid #e2e8f0">';
+      html += '<td style="padding:8px 10px;font-weight:600">'+t('year')+' '+y+'</td>';
+      html += '<td style="padding:8px 10px;text-align:center">'+(w*100).toFixed(0)+'%</td>';
+      html += '<td style="padding:8px 10px;text-align:center;color:'+(r.s1!==null?'#1a6fc4':'#b0bcd4')+'">'+(r.s1!==null?r.s1.toFixed(2):'—')+'</td>';
+      html += '<td style="padding:8px 10px;text-align:center;color:'+(r.s2!==null?'#1a6fc4':'#b0bcd4')+'">'+(r.s2!==null?r.s2.toFixed(2):'—')+'</td>';
+      html += '<td style="padding:8px 10px;text-align:center;font-weight:700;color:'+(r.annual!==null?'#1a6fc4':'#b0bcd4')+'">'+(r.annual!==null?r.annual.toFixed(2):'—')+'</td>';
+      html += '<td style="padding:8px 10px;text-align:center;font-weight:800;color:'+(r.annual!==null?'#d4900e':'#b0bcd4')+'">'+contrib+'</td>';
+      html += '</tr>';
+    }
+
+    html += '<tr style="background:#f8fafd"><td colspan="5" style="padding:10px;text-align:right;font-weight:800">'+t('finalCGPA')+'</td>';
+    html += '<td style="padding:10px;text-align:center;font-family:\'Playfair Display\',serif;font-size:20px;font-weight:800;color:#d4900e">'+cgpa.toFixed(3)+'</td></tr>';
+    html += '</tbody></table>';
+  }
+
+  // Individual years with courses
+  for(let y=1; y<=6; y++){
+    if(!sel['y'+y]) continue;
+    const r = calcYear(y);
+    if(r.annual === null) continue;
+    const dy = UD.gpaData[y];
+    const ys = standing(r.annual);
+
+    html += '<div class="snap-year-block">';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">';
+    html += '<strong style="font-size:15px">'+t('year')+' '+y+' <span style="color:#d4900e;font-size:12px">('+(WT[y]*100).toFixed(0)+'%)</span></strong>';
+    html += '<span style="background:#eef2f7;padding:4px 12px;border-radius:12px;font-size:12px;font-weight:700">'+r.annual.toFixed(2)+' — '+ys.label+'</span>';
+    html += '</div>';
+
+    if(!dy.annualMode){
+      for(let s=1; s<=2; s++){
+        const sem = dy['s'+s];
+        if(!sem) continue;
+        const sg = s===1 ? r.s1 : r.s2;
+        if(sg === null) continue;
+
+        html += '<div style="margin-bottom:8px">';
+        html += '<div style="font-size:12px;font-weight:700;color:#6b7a99;margin-bottom:4px">'+t('semester')+' '+s+' — GPA: '+sg.toFixed(2)+'</div>';
+
+        if(!sem.m){
+          const graded = (sem.d||[]).filter(function(c){ return c.g; });
+          if(graded.length > 0){
+            html += '<table style="width:100%;border-collapse:collapse;font-size:12px">';
+            graded.forEach(function(c){
+              const pts = SC_GRADES.find(function(x){ return x.g===c.g; });
+              html += '<tr style="border-bottom:1px solid #e2e8f0">';
+              html += '<td style="padding:4px 6px">'+esc(c.n||t('course'))+'</td>';
+              html += '<td style="padding:4px 6px;text-align:center">'+(c.c||'?')+'h</td>';
+              html += '<td style="padding:4px 6px;text-align:center;font-weight:700">'+c.g+'</td>';
+              html += '<td style="padding:4px 6px;text-align:center;color:#6b7a99">'+(pts ? (pts.pts*(parseFloat(c.c)||0)).toFixed(1) : '—')+'</td>';
+              html += '</tr>';
+            });
+            html += '</table>';
+          }
+        } else {
+          html += '<div style="font-size:11px;color:#6b7a99">'+t('manualGPA')+': '+sg.toFixed(2)+'</div>';
+        }
+        html += '</div>';
+      }
+    } else {
+      html += '<div style="font-size:12px;color:#6b7a99">'+t('annualDirect')+': '+r.annual.toFixed(2)+'</div>';
+    }
+    html += '</div>';
+  }
+
+  // Watermark
+  html += '<div class="watermark">Generated by Bahri University CGPA Portal · '+new Date().toLocaleDateString()+'</div>';
+
+  render.innerHTML = html;
+
+  // Wait for render then capture
+  await new Promise(function(resolve){ setTimeout(resolve, 300); });
+
+  try{
+    const canvas = await html2canvas(render, {
+      backgroundColor: '#ffffff',
+      scale: 2,
+      useCORS: true,
+      logging: false,
+      width: 600
+    });
+    const link = document.createElement('a');
+    link.download = 'CGPA-Report-'+(UD.profile.name||'Student')+'-'+new Date().toISOString().slice(0,10)+'.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    toast(t('generated'), 'ok');
+  }catch(e){
+    console.error('Screenshot error:', e);
+    toast('Screenshot failed: '+e.message, 'err');
+  }
+  render.innerHTML = '';
+};
+
+/* ══════════════════════════════════════════ */
+/*           EXPORT CSV (V4 + BOM fix)       */
+/* ══════════════════════════════════════════ */
+window.exportCSV = function(){
+  const BOM = '\uFEFF';
+  const rows = [['Year','Semester','Course','Credits','Score%','Grade','Grade Points']];
+
+  for(let y=1; y<=6; y++){
+    const d = UD.gpaData[y];
+    if(!d) continue;
+    if(d.annualMode){
+      rows.push(['Year '+y, 'Annual', 'Direct Entry', '—', '—', '—', d.annualGPA||0]);
+      continue;
+    }
+    [1,2].forEach(function(s){
+      const sem = d['s'+s];
+      if(!sem) return;
+      if(sem.m){
+        rows.push(['Year '+y, 'S'+s, 'Manual Entry', sem.c||0, '—', '—', sem.g||0]);
+      } else {
+        (sem.d||[]).forEach(function(i){
+          if(!i.g) return;
+          const pts = SC_GRADES.find(function(x){ return x.g===i.g; });
+          rows.push([
+            'Year '+y, 'S'+s,
+            (i.n||'Unnamed').replace(/,/g,';'),
+            i.c||0, i.p||'—', i.g||'—',
+            pts ? pts.pts : ''
+          ]);
+        });
+      }
+    });
+  }
+
+  const cgpa = calcCGPA();
+  rows.push([]);
+  rows.push(['--- Summary ---']);
+  rows.push(['Year','Weight','Sem 1 GPA','Sem 2 GPA','Annual GPA','Contribution']);
+  for(let y=1; y<=6; y++){
+    const r = calcYear(y);
+    rows.push([
+      'Year '+y,
+      (WT[y]*100).toFixed(0)+'%',
+      r.s1!==null ? r.s1.toFixed(3) : '—',
+      r.s2!==null ? r.s2.toFixed(3) : '—',
+      r.annual!==null ? r.annual.toFixed(3) : '—',
+      r.annual!==null ? (r.annual*WT[y]).toFixed(3) : '—'
+    ]);
+  }
+  rows.push([]);
+  rows.push(['Final CGPA', cgpa.toFixed(3)]);
+  rows.push(['Standing', standing(cgpa).label]);
+
+  const csv = BOM + rows.map(function(r){
+    return r.map(function(c){ return '"'+c+'"'; }).join(',');
+  }).join('\n');
+
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'CGPA_'+(UD.profile.id||'student')+'_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast(t('downloadCSV')+' ✓', 'ok');
+};
+
+/* ══════════════════════════════════════════ */
+/*        FULL RENDER + INIT APP             */
+/* ══════════════════════════════════════════ */
+function fullRender(){
+  ensureData();
+  applyLang();
+  updateSidebar();
+  updateStats();
+  updateDashTable();
+  renderChart();
+
+  // Render active year view
+  for(let y=1; y<=6; y++){
+    const v = document.getElementById('view-y'+y);
+    if(v && v.classList.contains('active')) updateYearView(y);
+  }
+
+  // Re-init what-if if open
+  const wiView = document.getElementById('view-whatif');
+  if(wiView && wiView.classList.contains('active')) renderWhatIf();
+
+  // Profile
+  const profView = document.getElementById('view-profile');
+  if(profView && profView.classList.contains('active')) loadProfile();
+}
+window.fullRender = fullRender;
+// Alias for toggleLang
+window.updateAll = fullRender;
+
+function initApp(){
+  wiState = {};
+  fullRender();
+  sv('dashboard', document.getElementById('n-dashboard'));
+}
+/* ══════════════════════════════════════════ */
+/*          FIREBASE AUTH LISTENER           */
+/* ══════════════════════════════════════════ */
+onAuthStateChanged(auth, async function(user){
+  if(user){
+    CU = user;
+    isGuest = false;
+
+    document.getElementById('welcome-screen').style.display = 'none';
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('guest-banner').classList.remove('show');
+    document.body.classList.remove('has-guest-banner');
+
+    // Show loading
+    document.getElementById('load-ov').style.display = 'flex';
+
+    await loadUserData();
+
+    document.getElementById('load-ov').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+
+    // Show security & sharing for logged-in users
+    document.getElementById('security-card').style.display = 'block';
+    document.getElementById('share-section-wrap').style.display = 'block';
+
+    initApp();
+
+  } else {
+    if(!isGuest){
+      CU = null;
+      UD = null;
+      document.getElementById('app').style.display = 'none';
+      document.getElementById('auth-screen').style.display = 'none';
+      document.getElementById('guest-banner').classList.remove('show');
+      document.body.classList.remove('has-guest-banner');
+      document.getElementById('load-ov').style.display = 'none';
+      document.getElementById('welcome-screen').style.display = 'flex';
+    }
+  }
+});
+
+/* ══════════════════════════════════════════ */
+/*         KEYBOARD SHORTCUTS                */
+/* ══════════════════════════════════════════ */
+document.addEventListener('keydown', function(e){
+  // ESC closes all modals
+  if(e.key === 'Escape'){
+    closeConf();
+    closeDetail();
+    closeSnapModal();
+    closeImpSheet();
+    closeYrSheet();
+  }
+  // Ctrl+S / Cmd+S to force save
+  if((e.ctrlKey || e.metaKey) && e.key === 's'){
+    e.preventDefault();
+    if(UD){
+      save();
+      toast(t('dataSaved'), 'ok');
+    }
+  }
+});
+
+/* ══════════════════════════════════════════ */
+/*       CLOSE MODALS ON BACKDROP CLICK      */
+/* ══════════════════════════════════════════ */
+['detail-modal','snap-modal','conf-modal','yr-sheet','imp-sheet'].forEach(function(id){
+  var el = document.getElementById(id);
+  if(el){
+    el.addEventListener('click', function(e){
+      if(e.target === this){
+        if(id==='detail-modal') closeDetail();
+        else if(id==='snap-modal') closeSnapModal();
+        else if(id==='conf-modal') closeConf();
+        else if(id==='yr-sheet') closeYrSheet();
+        else if(id==='imp-sheet') closeImpSheet();
+      }
+    });
+  }
+});
+
+/* ══════════════════════════════════════════ */
+/*      BEFOREUNLOAD — PENDING SAVE WARN     */
+/* ══════════════════════════════════════════ */
+window.addEventListener('beforeunload', function(e){
+  if(saveTimer){
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
+
+/* ══════════════════════════════════════════ */
+/*        ONLINE / OFFLINE INDICATOR         */
+/* ══════════════════════════════════════════ */
+window.addEventListener('online', function(){
+  if(!isGuest && UD){
+    toast('🟢 Back online — syncing...', 'ok');
+    save();
+  }
+});
+
+window.addEventListener('offline', function(){
+  if(!isGuest){
+    toast('🔴 You are offline — changes saved when reconnected', 'err');
+  }
+});
+
+/* ══════════════════════════════════════════ */
+/*      THEME OBSERVER — RE-DRAW CHART       */
+/* ══════════════════════════════════════════ */
+new MutationObserver(function(){
+  if(gpaChart && UD) renderChart();
+}).observe(document.documentElement, {
+  attributes: true,
+  attributeFilter: ['data-theme']
+});
+
+/* ══════════════════════════════════════════ */
+/*         INITIAL STATE ON PAGE LOAD        */
+/* ══════════════════════════════════════════ */
+document.getElementById('welcome-screen').style.display = 'flex';
+document.getElementById('auth-screen').style.display = 'none';
+document.getElementById('app').style.display = 'none';
+document.getElementById('load-ov').style.display = 'none';
+
+</script>
+</body>
+</html>
