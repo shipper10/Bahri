@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>CGPA Portal — Bahri University</title>
+<title>CGPA Portal — Bahri Medicine</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600;700&family=Noto+Kufi+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -558,7 +558,7 @@ input:checked+.slider:before{transform:translateX(20px)}
   <div class="welcome-wrap">
     <div class="welcome-logo">
       <span class="icon">🎓</span>
-      <h1>Bahri University</h1>
+      <h1>Bahri Medicine</h1>
       <p>Official CGPA Portal</p>
     </div>
     <div class="welcome-btns">
@@ -588,7 +588,7 @@ input:checked+.slider:before{transform:translateX(20px)}
     <button class="auth-back" onclick="backToWelcome()">← <span id="auth-back-txt">Back</span></button>
     <div class="auth-logo">
       <span class="icon">🎓</span>
-      <h1>Bahri University</h1>
+      <h1>Bahri Medicine</h1>
       <p>Official CGPA Portal</p>
     </div>
     <div class="auth-card">
@@ -646,7 +646,7 @@ input:checked+.slider:before{transform:translateX(20px)}
   <!-- Mobile Top Bar -->
   <div class="mob-top">
     <button class="hamburger" onclick="toggleSB()" aria-label="Menu"><span></span><span></span><span></span></button>
-    <span class="logo-sm">🎓 Bahri University</span>
+    <span class="logo-sm">🎓 Bahri Medicine</span>
     <button class="mob-icon-btn" onclick="toggleLang()" title="Language">🌐</button>
     <button class="mob-icon-btn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
     <button class="mob-icon-btn" onclick="doLogout()" title="Sign out" style="background:rgba(239,68,68,.18);color:#fca5a5">🚪</button>
@@ -657,7 +657,7 @@ input:checked+.slider:before{transform:translateX(20px)}
   <!-- Sidebar -->
   <div class="sidebar" id="sidebar">
     <div class="sb-logo">
-      <div class="app-name">🎓 Bahri University</div>
+      <div class="app-name">🎓 Bahri Medicine</div>
       <div class="app-sub">CGPA Portal</div>
     </div>
     <div class="user-card">
@@ -739,7 +739,7 @@ input:checked+.slider:before{transform:translateX(20px)}
       <div id="view-dashboard" class="view active">
         <div class="ph">
           <h1 id="dash-title">Academic Dashboard</h1>
-          <p id="dash-desc">Weighted GPA summary — Bahri University CGPA System</p>
+          <p id="dash-desc">Weighted GPA summary — Bahri Medicine CGPA System</p>
         </div>
         <div id="partial-bar" class="partial-bar" style="display:none"></div>
         <div class="sg">
@@ -834,9 +834,14 @@ input:checked+.slider:before{transform:translateX(20px)}
         <div class="card">
           <div class="card-hdr">
             <div class="card-title" id="wi-proj-title">Year-by-Year Projections</div>
-            <button class="exp-btn" style="background:var(--gb);color:var(--gold);border:1px solid var(--gold);padding:7px 13px;font-size:12px" onclick="resetWhatIf()">
-              ↺ <span id="btn-wi-reset">Reset All</span>
-            </button>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="exp-btn" style="background:var(--pb);color:var(--primary);border:1px solid var(--primary);padding:7px 13px;font-size:12px" onclick="openSnapModal('whatif')">
+                📸 <span id="btn-wi-snap-txt">Screenshot</span>
+              </button>
+              <button class="exp-btn" style="background:var(--gb);color:var(--gold);border:1px solid var(--gold);padding:7px 13px;font-size:12px" onclick="resetWhatIf()">
+                ↺ <span id="btn-wi-reset">Reset All</span>
+              </button>
+            </div>
           </div>
           <div class="wi-grid" id="wi-grid"></div>
           <div class="wi-result">
@@ -952,7 +957,7 @@ input:checked+.slider:before{transform:translateX(20px)}
       <div id="view-guide" class="view">
         <div class="ph">
           <h1 id="guide-title">📚 Grading Guide</h1>
-          <p id="guide-desc">Bahri University — Weighted CGPA Formula (Medicine)</p>
+          <p id="guide-desc">Bahri Medicine — Weighted CGPA Formula (Medicine)</p>
         </div>
         <div class="card">
           <div class="card-title" id="guide-scale-title">Grade Scale</div>
@@ -1058,7 +1063,7 @@ const LANGS = {
     resources:'Resources', gradingGuide:'Grading Guide', signOut:'Sign Out',
     year:'Year', years:'Years',
     academicDashboard:'Academic Dashboard',
-    dashboardDesc:'Weighted GPA summary — Bahri University CGPA System',
+    dashboardDesc:'Weighted GPA summary — Bahri Medicine CGPA System',
     currentCGPA:'Current CGPA', totalCredits:'Total Credits',
     creditHoursEntered:'credit hours entered',
     yearsComplete:'Years Complete', bestYearGPA:'Best Year GPA',
@@ -1138,8 +1143,8 @@ const LANGS = {
     partialWarning:'Showing partial data',
   },
   ar: {
-    signIn:'تسجيل الدخول', createAccount:'إنشاء حساب', continueGuest:'الدخول كضيف',
-    guestNote:'بيانات الضيف تُحفظ محلياً فقط ولن تتزامن بين الأجهزة',
+    signIn:'تسجيل الدخول', createAccount:'إنشاء حساب', continueGuest:'الدخول كزائر',
+    guestNote:'بيانات الزائر تُحفظ محلياً فقط ولن تتزامن بين الأجهزة',
     theme:'المظهر', back:'رجوع', email:'البريد الإلكتروني', password:'كلمة المرور',
     fullName:'الاسم الكامل', universityId:'الرقم الجامعي',
     passwordMin:'كلمة المرور (6 أحرف على الأقل)', signInBtn:'تسجيل الدخول →',
@@ -1149,15 +1154,15 @@ const LANGS = {
     completeAllFields:'أكمل جميع الحقول (كلمة المرور ≥ 6 أحرف).',
     incorrectLogin:'بريد إلكتروني أو كلمة مرور غير صحيحة.',
     regFailed:'فشل التسجيل. البريد الإلكتروني قد يكون مستخدماً.',
-    guestWarning:'وضع الضيف — بياناتك محفوظة محلياً فقط',
+    guestWarning:'وضع الزائر — بياناتك محفوظة محلياً فقط',
     createAccountSync:'إنشاء حساب ومزامنة', downloadBackup:'💾 تحميل نسخة احتياطية',
-    guestUser:'مستخدم ضيف', guestId:'وضع محلي',
+    guestUser:'مستخدم زائر', guestId:'وضع محلي',
     overview:'نظرة عامة', dashboard:'لوحة التحكم', whatIf:'ماذا لو',
     leaderboard:'المتصدرين', profile:'الملف الشخصي', academicYears:'السنوات الدراسية',
     resources:'المصادر', gradingGuide:'دليل الدرجات', signOut:'تسجيل الخروج',
     year:'السنة', years:'السنوات',
     academicDashboard:'لوحة التحكم الأكاديمية',
-    dashboardDesc:'ملخص المعدل الموزون — نظام المعدل التراكمي لجامعة بحري',
+    dashboardDesc:'ملخص المعدل الموزون — نظام المعدل التراكمي لطب بحري',
     currentCGPA:'المعدل التراكمي الحالي', totalCredits:'إجمالي الساعات',
     creditHoursEntered:'ساعات معتمدة مُدخلة',
     yearsComplete:'السنوات المكتملة', bestYearGPA:'أفضل معدل سنوي',
@@ -1246,7 +1251,7 @@ function applyLang(){
   const isAr = currentLang==='ar';
   document.documentElement.lang = currentLang;
   document.documentElement.dir = isAr?'rtl':'ltr';
-  document.title = isAr?'بوابة المعدل التراكمي — جامعة بحري':'CGPA Portal — Bahri University';
+  document.title = isAr?'بوابة المعدل التراكمي — طب بحري':'CGPA Portal — Bahri Medicine';
 
   const langBtnTxt = isAr?'EN':'عربي';
   const els = {
@@ -1301,7 +1306,7 @@ function applyLang(){
     'prof-danger-title':t('dangerZone'),'prof-danger-desc':t('dangerDesc'),
     'btn-reset-all':t('resetAllData'),
     'guide-title':'📚 '+t('gradingGuide'),
-    'guide-desc':isAr?'جامعة بحري — معادلة المعدل التراكمي الموزون':'Bahri University — Weighted CGPA Formula',
+    'guide-desc':isAr?'طب بحري — معادلة المعدل التراكمي الموزون':'Bahri Medicine — Weighted CGPA Formula',
     'guide-scale-title':t('gradeScale'),'guide-weights-title':t('yearWeights'),
     'guide-formula-title':t('cgpaFormula'),
     'guide-th-grade':t('guideGrade'),'guide-th-range':t('guideRange'),
@@ -1347,7 +1352,7 @@ window.toggleTheme=function(){
 /* ══════════════════════════════════════════ */
 /*         CORE VARIABLES & GRADES           */
 /* ══════════════════════════════════════════ */
-// ★ CORRECT Bahri University grading system ★
+// ★ CORRECT Bahri Medicine grading system ★
 const WT = {1:0.05, 2:0.10, 3:0.10, 4:0.15, 5:0.20, 6:0.40};
 const SC_GRADES = [
   {g:'A',  pts:4.0, r:'≥ 80'},
@@ -2601,17 +2606,31 @@ window.confirmResetAll = function(){
 /* ══════════════════════════════════════════ */
 /*          SCREENSHOT / SNAPSHOT            */
 /* ══════════════════════════════════════════ */
-window.openSnapModal = function(){
+let currentSnapContext = 'dashboard';
+
+window.openSnapModal = function(context = 'dashboard'){
+  currentSnapContext = context;
   const checks = document.getElementById('snap-checks');
   let html = '';
+  
+  // خيارات الاسم والرقم الجامعي (تظهر دائماً في الحالتين)
   html += '<label class="snap-check checked"><input type="checkbox" checked value="name" onchange="this.parentElement.classList.toggle(\'checked\',this.checked)"> '+t('snapName')+'</label>';
   html += '<label class="snap-check checked"><input type="checkbox" checked value="uid" onchange="this.parentElement.classList.toggle(\'checked\',this.checked)"> '+t('snapId')+'</label>';
-  html += '<label class="snap-check checked"><input type="checkbox" checked value="summary" onchange="this.parentElement.classList.toggle(\'checked\',this.checked)"> '+t('snapSummary')+'</label>';
-  for(let y=1; y<=6; y++){
-    const r = calcYear(y);
-    const has = r.annual !== null;
-    html += '<label class="snap-check '+(has?'checked':'')+'"><input type="checkbox" '+(has?'checked':'')+' value="y'+y+'" onchange="this.parentElement.classList.toggle(\'checked\',this.checked)"> '+t('snapYear')+' '+y+(has?'':' ('+t('noData')+')')+'</label>';
+  
+  if(context === 'dashboard') {
+    // خيارات لوحة التحكم العادية
+    html += '<label class="snap-check checked"><input type="checkbox" checked value="summary" onchange="this.parentElement.classList.toggle(\'checked\',this.checked)"> '+t('snapSummary')+'</label>';
+    for(let y=1; y<=6; y++){
+      const r = calcYear(y);
+      const has = r.annual !== null;
+      html += '<label class="snap-check '+(has?'checked':'')+'"><input type="checkbox" '+(has?'checked':'')+' value="y'+y+'" onchange="this.parentElement.classList.toggle(\'checked\',this.checked)"> '+t('snapYear')+' '+y+(has?'':' ('+t('noData')+')')+'</label>';
+    }
+  } else if (context === 'whatif') {
+    // خيارات ماذا لو
+    html += '<label class="snap-check checked"><input type="checkbox" checked value="summary" onchange="this.parentElement.classList.toggle(\'checked\',this.checked)"> '+t('projectedCGPA')+'</label>';
+    html += '<label class="snap-check checked"><input type="checkbox" checked value="years" onchange="this.parentElement.classList.toggle(\'checked\',this.checked)"> '+t('yearProjections')+'</label>';
   }
+  
   checks.innerHTML = html;
   document.getElementById('snap-modal').classList.add('open');
 };
@@ -2627,119 +2646,173 @@ window.generateSnapshot = async function(){
   const sel = {};
   checks.forEach(function(c){ sel[c.value] = c.checked; });
 
-  const cgpa = calcCGPA();
-  const s = standing(cgpa);
   const render = document.getElementById('snap-render');
-
   let html = '';
 
-  // Header
+  // 1. الترويسة (Header)
   html += '<div class="snap-header">';
-  html += '<h2>🎓 Bahri University — CGPA Report</h2>';
+  if(currentSnapContext === 'whatif') {
+    html += '<h2>🎓 Bahri Medicine — What-If Projection</h2>';
+  } else {
+    html += '<h2>🎓 Bahri Medicine — CGPA Report</h2>';
+  }
+  
   if(sel.name) html += '<p style="font-size:16px;font-weight:700;margin-top:8px">'+esc(UD.profile.name||'Student')+'</p>';
   if(sel.uid && UD.profile.id) html += '<p style="font-size:13px;color:#6b7a99">ID: '+esc(UD.profile.id)+'</p>';
   html += '</div>';
 
-  // Summary table
-  if(sel.summary){
-    let compY = 0;
-    for(let y=1;y<=6;y++){ if(calcYear(y).annual!==null) compY++; }
-
-    html += '<div class="snap-stat">';
-    html += '<div><div style="font-size:10px;color:#6b7a99;font-weight:700;text-transform:uppercase">CGPA</div>';
-    html += '<div style="font-family:\'Playfair Display\',serif;font-size:32px;color:#1a6fc4">'+cgpa.toFixed(3)+'</div></div>';
-    html += '<div><div style="font-size:10px;color:#6b7a99;font-weight:700;text-transform:uppercase">'+t('yearsComplete')+'</div>';
-    html += '<div style="font-family:\'Playfair Display\',serif;font-size:32px;color:#0d2240">'+compY+'/6</div></div>';
-    html += '<div><div style="font-size:10px;color:#6b7a99;font-weight:700;text-transform:uppercase">Standing</div>';
-    html += '<div style="font-size:18px;font-weight:700;margin-top:6px">'+s.label+'</div></div>';
-    html += '</div>';
-
-    // Record table
-    html += '<table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px">';
-    html += '<thead><tr style="background:#0d2240;color:rgba(255,255,255,.85)">';
-    html += '<th style="padding:8px 10px;text-align:left">'+t('year')+'</th>';
-    html += '<th style="padding:8px 10px;text-align:center">'+t('weight')+'</th>';
-    html += '<th style="padding:8px 10px;text-align:center">Sem 1</th>';
-    html += '<th style="padding:8px 10px;text-align:center">Sem 2</th>';
-    html += '<th style="padding:8px 10px;text-align:center">'+t('annualGPA')+'</th>';
-    html += '<th style="padding:8px 10px;text-align:center">'+t('contribution')+'</th>';
-    html += '</tr></thead><tbody>';
-
+  // 2. المحتوى بناءً على الصفحة
+  if (currentSnapContext === 'whatif') {
+    // === رسم صورة توقعات ماذا لو ===
+    let total = 0;
     for(let y=1; y<=6; y++){
       const r = calcYear(y);
-      const w = WT[y];
-      const contrib = r.annual!==null ? (r.annual * w).toFixed(3) : '—';
-      html += '<tr style="border-bottom:1px solid #e2e8f0">';
-      html += '<td style="padding:8px 10px;font-weight:600">'+t('year')+' '+y+'</td>';
-      html += '<td style="padding:8px 10px;text-align:center">'+(w*100).toFixed(0)+'%</td>';
-      html += '<td style="padding:8px 10px;text-align:center;color:'+(r.s1!==null?'#1a6fc4':'#b0bcd4')+'">'+(r.s1!==null?r.s1.toFixed(2):'—')+'</td>';
-      html += '<td style="padding:8px 10px;text-align:center;color:'+(r.s2!==null?'#1a6fc4':'#b0bcd4')+'">'+(r.s2!==null?r.s2.toFixed(2):'—')+'</td>';
-      html += '<td style="padding:8px 10px;text-align:center;font-weight:700;color:'+(r.annual!==null?'#1a6fc4':'#b0bcd4')+'">'+(r.annual!==null?r.annual.toFixed(2):'—')+'</td>';
-      html += '<td style="padding:8px 10px;text-align:center;font-weight:800;color:'+(r.annual!==null?'#d4900e':'#b0bcd4')+'">'+contrib+'</td>';
-      html += '</tr>';
+      const st = wiState[y] || {};
+      const isCustom = st.mode==='custom' || (r.annual===null);
+      if(isCustom){ total += Math.min(4, Math.max(0, parseFloat(st.val)||0)) * WT[y]; }
+      else if(r.annual!==null){ total += r.annual * WT[y]; }
+    }
+    const cgpa = total;
+    const s = standing(cgpa);
+
+    if(sel.summary) {
+      html += '<div class="snap-stat" style="background:var(--pb);border:2px solid var(--primary);border-radius:12px;margin-bottom:16px">';
+      html += '<div><div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase">'+t('projectedCGPA')+'</div>';
+      html += '<div style="font-family:\'Playfair Display\',serif;font-size:38px;color:var(--primary);line-height:1;margin-top:6px">'+cgpa.toFixed(3)+'</div></div>';
+      html += '<div><div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase">Standing</div>';
+      html += '<div style="font-size:18px;font-weight:700;margin-top:14px;color:'+(cgpa>=2.0?'#10b981':'#ef4444')+'">'+s.label+'</div></div>';
+      html += '</div>';
     }
 
-    html += '<tr style="background:#f8fafd"><td colspan="5" style="padding:10px;text-align:right;font-weight:800">'+t('finalCGPA')+'</td>';
-    html += '<td style="padding:10px;text-align:center;font-family:\'Playfair Display\',serif;font-size:20px;font-weight:800;color:#d4900e">'+cgpa.toFixed(3)+'</td></tr>';
-    html += '</tbody></table>';
-  }
+    if(sel.years) {
+      html += '<table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;text-align:center">';
+      html += '<thead><tr style="background:#0d2240;color:rgba(255,255,255,.85)">';
+      html += '<th style="padding:8px 10px;text-align:left">'+t('year')+'</th>';
+      html += '<th style="padding:8px 10px">'+t('weight')+'</th>';
+      html += '<th style="padding:8px 10px">Mode</th>';
+      html += '<th style="padding:8px 10px">GPA</th>';
+      html += '<th style="padding:8px 10px">'+t('contribution')+'</th>';
+      html += '</tr></thead><tbody>';
 
-  // Individual years with courses
-  for(let y=1; y<=6; y++){
-    if(!sel['y'+y]) continue;
-    const r = calcYear(y);
-    if(r.annual === null) continue;
-    const dy = UD.gpaData[y];
-    const ys = standing(r.annual);
+      for(let y=1; y<=6; y++){
+        const r = calcYear(y);
+        const st = wiState[y] || {};
+        const isCustom = st.mode==='custom' || (r.annual===null);
+        const val = isCustom ? Math.min(4, Math.max(0, parseFloat(st.val)||0)) : r.annual;
+        const contrib = (val * WT[y]).toFixed(3);
 
-    html += '<div class="snap-year-block">';
-    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">';
-    html += '<strong style="font-size:15px">'+t('year')+' '+y+' <span style="color:#d4900e;font-size:12px">('+(WT[y]*100).toFixed(0)+'%)</span></strong>';
-    html += '<span style="background:#eef2f7;padding:4px 12px;border-radius:12px;font-size:12px;font-weight:700">'+r.annual.toFixed(2)+' — '+ys.label+'</span>';
-    html += '</div>';
-
-    if(!dy.annualMode){
-      for(let s=1; s<=2; s++){
-        const sem = dy['s'+s];
-        if(!sem) continue;
-        const sg = s===1 ? r.s1 : r.s2;
-        if(sg === null) continue;
-
-        html += '<div style="margin-bottom:8px">';
-        html += '<div style="font-size:12px;font-weight:700;color:#6b7a99;margin-bottom:4px">'+t('semester')+' '+s+' — GPA: '+sg.toFixed(2)+'</div>';
-
-        if(!sem.m){
-          const graded = (sem.d||[]).filter(function(c){ return c.g; });
-          if(graded.length > 0){
-            html += '<table style="width:100%;border-collapse:collapse;font-size:12px">';
-            graded.forEach(function(c){
-              const pts = SC_GRADES.find(function(x){ return x.g===c.g; });
-              html += '<tr style="border-bottom:1px solid #e2e8f0">';
-              html += '<td style="padding:4px 6px">'+esc(c.n||t('course'))+'</td>';
-              html += '<td style="padding:4px 6px;text-align:center">'+(c.c||'?')+'h</td>';
-              html += '<td style="padding:4px 6px;text-align:center;font-weight:700">'+c.g+'</td>';
-              html += '<td style="padding:4px 6px;text-align:center;color:#6b7a99">'+(pts ? (pts.pts*(parseFloat(c.c)||0)).toFixed(1) : '—')+'</td>';
-              html += '</tr>';
-            });
-            html += '</table>';
-          }
-        } else {
-          html += '<div style="font-size:11px;color:#6b7a99">'+t('manualGPA')+': '+sg.toFixed(2)+'</div>';
-        }
-        html += '</div>';
+        html += '<tr style="border-bottom:1px solid #e2e8f0">';
+        html += '<td style="padding:8px 10px;text-align:left;font-weight:600">'+t('year')+' '+y+'</td>';
+        html += '<td style="padding:8px 10px">'+(WT[y]*100).toFixed(0)+'%</td>';
+        html += '<td style="padding:8px 10px;font-size:11px">'+(isCustom?'<span style="color:#1a6fc4;background:#eff6ff;padding:3px 8px;border-radius:6px;font-weight:600">'+t('custom')+'</span>':'<span style="color:#10b981;background:#ecfdf5;padding:3px 8px;border-radius:6px;font-weight:600">'+t('actual')+'</span>')+'</td>';
+        html += '<td style="padding:8px 10px;font-weight:700">'+(val!==null ? val.toFixed(2) : '0.00')+'</td>';
+        html += '<td style="padding:8px 10px;font-weight:800;color:#d4900e">'+contrib+'</td>';
+        html += '</tr>';
       }
-    } else {
-      html += '<div style="font-size:12px;color:#6b7a99">'+t('annualDirect')+': '+r.annual.toFixed(2)+'</div>';
+      html += '</tbody></table>';
     }
-    html += '</div>';
+  } else {
+    // === رسم لوحة التحكم العادية (الكود الأصلي الخاص بك) ===
+    const cgpa = calcCGPA();
+    const s = standing(cgpa);
+    
+    if(sel.summary){
+      let compY = 0;
+      for(let y=1;y<=6;y++){ if(calcYear(y).annual!==null) compY++; }
+
+      html += '<div class="snap-stat">';
+      html += '<div><div style="font-size:10px;color:#6b7a99;font-weight:700;text-transform:uppercase">CGPA</div>';
+      html += '<div style="font-family:\'Playfair Display\',serif;font-size:32px;color:#1a6fc4">'+cgpa.toFixed(3)+'</div></div>';
+      html += '<div><div style="font-size:10px;color:#6b7a99;font-weight:700;text-transform:uppercase">'+t('yearsComplete')+'</div>';
+      html += '<div style="font-family:\'Playfair Display\',serif;font-size:32px;color:#0d2240">'+compY+'/6</div></div>';
+      html += '<div><div style="font-size:10px;color:#6b7a99;font-weight:700;text-transform:uppercase">Standing</div>';
+      html += '<div style="font-size:18px;font-weight:700;margin-top:6px">'+s.label+'</div></div>';
+      html += '</div>';
+
+      html += '<table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px">';
+      html += '<thead><tr style="background:#0d2240;color:rgba(255,255,255,.85)">';
+      html += '<th style="padding:8px 10px;text-align:left">'+t('year')+'</th>';
+      html += '<th style="padding:8px 10px;text-align:center">'+t('weight')+'</th>';
+      html += '<th style="padding:8px 10px;text-align:center">Sem 1</th>';
+      html += '<th style="padding:8px 10px;text-align:center">Sem 2</th>';
+      html += '<th style="padding:8px 10px;text-align:center">'+t('annualGPA')+'</th>';
+      html += '<th style="padding:8px 10px;text-align:center">'+t('contribution')+'</th>';
+      html += '</tr></thead><tbody>';
+
+      for(let y=1; y<=6; y++){
+        const r = calcYear(y);
+        const w = WT[y];
+        const contrib = r.annual!==null ? (r.annual * w).toFixed(3) : '—';
+        html += '<tr style="border-bottom:1px solid #e2e8f0">';
+        html += '<td style="padding:8px 10px;font-weight:600">'+t('year')+' '+y+'</td>';
+        html += '<td style="padding:8px 10px;text-align:center">'+(w*100).toFixed(0)+'%</td>';
+        html += '<td style="padding:8px 10px;text-align:center;color:'+(r.s1!==null?'#1a6fc4':'#b0bcd4')+'">'+(r.s1!==null?r.s1.toFixed(2):'—')+'</td>';
+        html += '<td style="padding:8px 10px;text-align:center;color:'+(r.s2!==null?'#1a6fc4':'#b0bcd4')+'">'+(r.s2!==null?r.s2.toFixed(2):'—')+'</td>';
+        html += '<td style="padding:8px 10px;text-align:center;font-weight:700;color:'+(r.annual!==null?'#1a6fc4':'#b0bcd4')+'">'+(r.annual!==null?r.annual.toFixed(2):'—')+'</td>';
+        html += '<td style="padding:8px 10px;text-align:center;font-weight:800;color:'+(r.annual!==null?'#d4900e':'#b0bcd4')+'">'+contrib+'</td>';
+        html += '</tr>';
+      }
+
+      html += '<tr style="background:#f8fafd"><td colspan="5" style="padding:10px;text-align:right;font-weight:800">'+t('finalCGPA')+'</td>';
+      html += '<td style="padding:10px;text-align:center;font-family:\'Playfair Display\',serif;font-size:20px;font-weight:800;color:#d4900e">'+cgpa.toFixed(3)+'</td></tr>';
+      html += '</tbody></table>';
+    }
+
+    for(let y=1; y<=6; y++){
+      if(!sel['y'+y]) continue;
+      const r = calcYear(y);
+      if(r.annual === null) continue;
+      const dy = UD.gpaData[y];
+      const ys = standing(r.annual);
+
+      html += '<div class="snap-year-block">';
+      html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">';
+      html += '<strong style="font-size:15px">'+t('year')+' '+y+' <span style="color:#d4900e;font-size:12px">('+(WT[y]*100).toFixed(0)+'%)</span></strong>';
+      html += '<span style="background:#eef2f7;padding:4px 12px;border-radius:12px;font-size:12px;font-weight:700">'+r.annual.toFixed(2)+' — '+ys.label+'</span>';
+      html += '</div>';
+
+      if(!dy.annualMode){
+        for(let s=1; s<=2; s++){
+          const sem = dy['s'+s];
+          if(!sem) continue;
+          const sg = s===1 ? r.s1 : r.s2;
+          if(sg === null) continue;
+
+          html += '<div style="margin-bottom:8px">';
+          html += '<div style="font-size:12px;font-weight:700;color:#6b7a99;margin-bottom:4px">'+t('semester')+' '+s+' — GPA: '+sg.toFixed(2)+'</div>';
+
+          if(!sem.m){
+            const graded = (sem.d||[]).filter(function(c){ return c.g; });
+            if(graded.length > 0){
+              html += '<table style="width:100%;border-collapse:collapse;font-size:12px">';
+              graded.forEach(function(c){
+                const pts = SC_GRADES.find(function(x){ return x.g===c.g; });
+                html += '<tr style="border-bottom:1px solid #e2e8f0">';
+                html += '<td style="padding:4px 6px">'+esc(c.n||t('course'))+'</td>';
+                html += '<td style="padding:4px 6px;text-align:center">'+(c.c||'?')+'h</td>';
+                html += '<td style="padding:4px 6px;text-align:center;font-weight:700">'+c.g+'</td>';
+                html += '<td style="padding:4px 6px;text-align:center;color:#6b7a99">'+(pts ? (pts.pts*(parseFloat(c.c)||0)).toFixed(1) : '—')+'</td>';
+                html += '</tr>';
+              });
+              html += '</table>';
+            }
+          } else {
+            html += '<div style="font-size:11px;color:#6b7a99">'+t('manualGPA')+': '+sg.toFixed(2)+'</div>';
+          }
+          html += '</div>';
+        }
+      } else {
+        html += '<div style="font-size:12px;color:#6b7a99">'+t('annualDirect')+': '+r.annual.toFixed(2)+'</div>';
+      }
+      html += '</div>';
+    }
   }
 
-  // Watermark
-  html += '<div class="watermark">Generated by Bahri University CGPA Portal · '+new Date().toLocaleDateString()+'</div>';
+  // 3. التذييل والإنشاء
+  html += '<div class="watermark">Generated by Bahri Medicine CGPA Portal · '+new Date().toLocaleDateString()+'</div>';
 
   render.innerHTML = html;
 
-  // Wait for render then capture
   await new Promise(function(resolve){ setTimeout(resolve, 300); });
 
   try{
@@ -2751,7 +2824,8 @@ window.generateSnapshot = async function(){
       width: 600
     });
     const link = document.createElement('a');
-    link.download = 'CGPA-Report-'+(UD.profile.name||'Student')+'-'+new Date().toISOString().slice(0,10)+'.png';
+    let fileNameType = currentSnapContext === 'whatif' ? 'WhatIf-Projection' : 'CGPA-Report';
+    link.download = fileNameType + '-'+(UD.profile.name||'Student')+'-'+new Date().toISOString().slice(0,10)+'.png';
     link.href = canvas.toDataURL('image/png');
     link.click();
     toast(t('generated'), 'ok');
