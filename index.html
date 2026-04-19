@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>CGPA Portal — Bahri Medicine</title>
+<meta property="og:title" content="CGPA Portal — Bahri Medicine">
+<meta property="og:description" content="بوابة حساب المعدل التراكمي وتوقعات الدرجات لطلاب طب بحري">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://i.imgur.com/44ntFeh.png">
+<meta property="og:url" content="https://bahrimd.vercel.app/">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600;700&family=Noto+Kufi+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -478,7 +483,7 @@ input:checked+.slider:before{transform:translateX(20px)}
     <h3 id="conf-title">Confirm Action</h3>
     <p id="conf-txt">Are you sure?</p>
     <div class="conf-acts">
-      <button class="conf-cancel" onclick="closeConf()">Cancel</button>
+      <button class="conf-cancel" id="conf-cancel-btn" onclick="closeConf()">Cancel</button>
       <button class="conf-ok" id="conf-ok-btn">Delete</button>
     </div>
   </div>
@@ -532,7 +537,7 @@ input:checked+.slider:before{transform:translateX(20px)}
 <!-- SCREENSHOT MODAL -->
 <div id="snap-modal">
   <div class="snap-box">
-    <h3>📸 Export as Image</h3>
+    <h3 id="snap-title">📸 Export as Image</h3>
     <div class="snap-checks" id="snap-checks"></div>
     <div class="snap-acts">
       <button onclick="closeSnapModal()" style="background:var(--bg);color:var(--muted);border:1px solid var(--border)">Cancel</button>
@@ -788,8 +793,8 @@ input:checked+.slider:before{transform:translateX(20px)}
                 <tr>
                   <th id="th-year">Year</th>
                   <th id="th-weight">Weight</th>
-                  <th>Sem 1</th>
-                  <th>Sem 2</th>
+                  <th id="th-sem1">Sem 1</th>
+                  <th id="th-sem2">Sem 2</th>
                   <th id="th-annual">Annual GPA</th>
                   <th id="th-contrib">Contribution</th>
                 </tr>
@@ -1141,6 +1146,10 @@ const LANGS = {
     yearsEntered:'years entered',cgpaWillChange:'Your CGPA will change significantly as you complete more years.',
     inProgress:'In Progress',
     partialWarning:'Showing partial data',
+	sem1: 'Sem 1', sem2: 'Sem 2', scorePercent: 'Score%',
+    importSubText: 'Paste your course list below — one course per line.<br>Format: <strong>Course Name, Credit Hours</strong>',
+	clearSemBtn: 'Clear Semester',
+    clearSemConfirm: 'This will delete ALL courses in this semester. Are you sure?',
   },
   ar: {
     signIn:'تسجيل الدخول', createAccount:'إنشاء حساب', continueGuest:'الدخول كزائر',
@@ -1241,6 +1250,10 @@ const LANGS = {
     yearsEntered:'سنوات مُدخلة', cgpaWillChange:'معدلك سيتغير بشكل ملحوظ عند إكمال المزيد من السنوات.',
     inProgress:'قيد التقدم',
     partialWarning:'عرض بيانات جزئية',
+	sem1: 'فصل 1', sem2: 'فصل 2', scorePercent: 'النسبة %',
+    importSubText: 'الصق قائمة المواد أدناه — مادة واحدة في كل سطر.<br>الصيغة: <strong>اسم المادة, الساعات المعتمدة</strong>',
+	clearSemBtn: 'مسح الفصل',
+    clearSemConfirm: 'سيتم حذف جميع مواد هذا الفصل الدراسي. هل أنت متأكد؟',
   }
 };
 
@@ -1276,6 +1289,9 @@ function applyLang(){
     'nav-lbl-resources':t('resources'),'nav-guide-txt':t('gradingGuide'),
     'sb-logout-txt':t('signOut'),
     'dash-title':t('academicDashboard'),'dash-desc':t('dashboardDesc'),
+	'th-sem1': t('sem1'), 'th-sem2': t('sem2'),
+    'conf-cancel-btn': t('cancel'),
+    'snap-title': '📸 ' + t('screenshotTitle'),
     'lbl-cgpa':t('currentCGPA'),'lbl-credits':t('totalCredits'),
     'lbl-credits-sub':t('creditHoursEntered'),
     'lbl-yrs-complete':t('yearsComplete'),'lbl-best-yr':t('bestYearGPA'),
@@ -1323,6 +1339,8 @@ function applyLang(){
   });
   const lbSearch=document.getElementById('lb-search');
   if(lbSearch) lbSearch.placeholder=t('searchPlaceholder');
+  const impSub = document.getElementById('imp-sub-text');
+  if(impSub) impSub.innerHTML = t('importSubText');
   localStorage.setItem('appLang',currentLang);
 }
 
@@ -1466,6 +1484,8 @@ window.resetPw = function(){
 
 window.doLogout = function(){
   showConfirm(t('logoutConfirm'), ()=>{
+    localStorage.removeItem('isGuestSession'); // مسح الجلسة
+    localStorage.removeItem('lastActiveView'); // مسح الصفحة المحفوظة
     if(isGuest){
       isGuest = false; CU = null; UD = null;
       document.getElementById('app').style.display = 'none';
@@ -1483,6 +1503,7 @@ window.doLogout = function(){
 /* ══════════════════════════════════════════ */
 window.enterGuest = function(){
   isGuest = true;
+  localStorage.setItem('isGuestSession', 'true'); // حفظ حالة الضيف
   CU = { uid:'guest_local', email:'guest@local' };
 
   const saved = localStorage.getItem('guestData');
@@ -1510,6 +1531,7 @@ window.enterGuest = function(){
 
 window.guestToAccount = function(){
   localStorage.setItem('pendingTransfer', JSON.stringify(UD));
+  localStorage.removeItem('isGuestSession'); // <-- السطر الجديد لضمان عدم التعارض
   document.getElementById('app').style.display = 'none';
   document.getElementById('guest-banner').classList.remove('show');
   document.body.classList.remove('has-guest-banner');
@@ -1750,6 +1772,7 @@ let currentView = 'dashboard';
 
 window.sv = function(v, el, mobId){
   currentView = v;
+  localStorage.setItem('lastActiveView', v); // حفظ الصفحة الحالية
   document.querySelectorAll('.view').forEach(e=> e.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(e=> e.classList.remove('active'));
   document.querySelectorAll('.mob-tab').forEach(e=> e.classList.remove('active'));
@@ -1968,6 +1991,7 @@ function buildSemInner(y,s){
     + '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">'
     + gpaHtml
     + '<button class="import-btn" onclick="openImpSheet('+y+','+s+')">📋 '+t('importCourses').replace('📋 ','')+'</button>'
+    + '<button class="btn-del" onclick="clearSem('+y+','+s+')" title="'+t('clearSemBtn')+'" style="font-size:16px; margin: 0 5px;">🗑️</button>'
     + '<button class="btn-toggle" onclick="toggleM('+y+','+s+')">'+(sem.m ? '📝 '+t('courseByGrade') : '✏️ '+t('manualGPA'))+'</button>'
     + '</div></div>' + inner;
 }
@@ -1999,7 +2023,7 @@ function buildCourseTable(y,s,sem){
   });
 
   return '<div class="tbl-scroll"><table class="course-tbl">'
-    + '<thead><tr><th style="text-align:left">'+t('course')+'</th><th>'+t('creditHours')+'</th><th>Score%</th><th>'+t('grade')+'</th><th>'+t('points')+'</th><th></th></tr></thead>'
+    + '<thead><tr><th style="text-align:left">'+t('course')+'</th><th>'+t('creditHours')+'</th><th>'+t('scorePercent')+'</th><th>'+t('grade')+'</th><th>'+t('points')+'</th><th></th></tr></thead>'
     + '<tbody>'+rows+'</tbody></table></div>'
     + '<button class="btn-add-c" onclick="addD('+y+','+s+')">＋ '+t('addCourse')+'</button>';
 }
@@ -2095,6 +2119,16 @@ window.delD = function(y,s,idx){
     UD.gpaData[y]['s'+s].d.splice(idx,1);
     refreshSem(y,s); scheduleSave();
     toast(t('remove')+' ✓', 'inf');
+  }, t('delete'));
+};
+window.clearSem = function(y, s) {
+  showConfirm(t('clearSemConfirm'), function() {
+    UD.gpaData[y]['s' + s].d = []; // مسح كل المواد
+    UD.gpaData[y]['s' + s].g = ''; // مسح المعدل اليدوي
+    UD.gpaData[y]['s' + s].c = ''; // مسح الساعات اليدوية
+    refreshSem(y, s); 
+    scheduleSave();
+    toast(t('dataReset'), 'inf');
   }, t('delete'));
 };
 
@@ -2489,8 +2523,15 @@ function loadProfile(){
 }
 
 window.updateProfile = async function(){
-  UD.profile.name = document.getElementById('p-name').value.trim();
-  UD.profile.id = document.getElementById('p-id').value.trim();
+  const newName = document.getElementById('p-name').value.trim();
+  const newId = document.getElementById('p-id').value.trim();
+  
+  if(!newName) {
+    return toast(t('fillAllFields'), 'err'); // منع الحفظ إذا كان الاسم فارغاً
+  }
+  
+  UD.profile.name = newName;
+  UD.profile.id = newId;
   await save();
   updateSidebar();
   toast(t('profileUpdated'), 'ok');
@@ -2647,6 +2688,14 @@ window.generateSnapshot = async function(){
   checks.forEach(function(c){ sel[c.value] = c.checked; });
 
   const render = document.getElementById('snap-render');
+  
+  // -- التعديل الجديد لدعم العربية في الصورة --
+  const isAr = currentLang === 'ar';
+  render.setAttribute('dir', isAr ? 'rtl' : 'ltr');
+  render.style.fontFamily = isAr ? "'Noto Kufi Arabic', sans-serif" : "'DM Sans', sans-serif";
+  const align = isAr ? 'right' : 'left'; // متغير لضبط المحاذاة في الجداول
+  // -----------------------------------------
+
   let html = '';
 
   // 1. الترويسة (Header)
@@ -2687,7 +2736,7 @@ window.generateSnapshot = async function(){
     if(sel.years) {
       html += '<table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;text-align:center">';
       html += '<thead><tr style="background:#0d2240;color:rgba(255,255,255,.85)">';
-      html += '<th style="padding:8px 10px;text-align:left">'+t('year')+'</th>';
+      html += '<th style="padding:8px 10px;text-align:'+align+'">'+t('year')+'</th>';
       html += '<th style="padding:8px 10px">'+t('weight')+'</th>';
       html += '<th style="padding:8px 10px">Mode</th>';
       html += '<th style="padding:8px 10px">GPA</th>';
@@ -2702,7 +2751,7 @@ window.generateSnapshot = async function(){
         const contrib = (val * WT[y]).toFixed(3);
 
         html += '<tr style="border-bottom:1px solid #e2e8f0">';
-        html += '<td style="padding:8px 10px;text-align:left;font-weight:600">'+t('year')+' '+y+'</td>';
+        html += '<td style="padding:8px 10px;text-align:'+align+';font-weight:600">'+t('year')+' '+y+'</td>';
         html += '<td style="padding:8px 10px">'+(WT[y]*100).toFixed(0)+'%</td>';
         html += '<td style="padding:8px 10px;font-size:11px">'+(isCustom?'<span style="color:#1a6fc4;background:#eff6ff;padding:3px 8px;border-radius:6px;font-weight:600">'+t('custom')+'</span>':'<span style="color:#10b981;background:#ecfdf5;padding:3px 8px;border-radius:6px;font-weight:600">'+t('actual')+'</span>')+'</td>';
         html += '<td style="padding:8px 10px;font-weight:700">'+(val!==null ? val.toFixed(2) : '0.00')+'</td>';
@@ -2731,7 +2780,7 @@ window.generateSnapshot = async function(){
 
       html += '<table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px">';
       html += '<thead><tr style="background:#0d2240;color:rgba(255,255,255,.85)">';
-      html += '<th style="padding:8px 10px;text-align:left">'+t('year')+'</th>';
+      html += '<th style="padding:8px 10px;text-align:'+align+'">'+t('year')+'</th>';
       html += '<th style="padding:8px 10px;text-align:center">'+t('weight')+'</th>';
       html += '<th style="padding:8px 10px;text-align:center">Sem 1</th>';
       html += '<th style="padding:8px 10px;text-align:center">Sem 2</th>';
@@ -2841,7 +2890,7 @@ window.generateSnapshot = async function(){
 /* ══════════════════════════════════════════ */
 window.exportCSV = function(){
   const BOM = '\uFEFF';
-  const rows = [['Year','Semester','Course','Credits','Score%','Grade','Grade Points']];
+  const rows = [[t('year'), t('semester'), t('course'), t('creditHours'), t('scorePercent'), t('grade'), t('points')]];
 
   for(let y=1; y<=6; y++){
     const d = UD.gpaData[y];
@@ -2935,7 +2984,9 @@ window.updateAll = fullRender;
 function initApp(){
   wiState = {};
   fullRender();
-  sv('dashboard', document.getElementById('n-dashboard'));
+  // قراءة الصفحة المحفوظة، وإذا مافي يفتح لوحة التحكم
+  const savedView = localStorage.getItem('lastActiveView') || 'dashboard';
+  sv(savedView, document.getElementById('n-' + savedView));
 }
 /* ══════════════════════════════════════════ */
 /*          FIREBASE AUTH LISTENER           */
@@ -3055,12 +3106,58 @@ new MutationObserver(function(){
 });
 
 /* ══════════════════════════════════════════ */
-/*         INITIAL STATE ON PAGE LOAD        */
+/* MULTI-TAB SYNC (حل مشكلة تعدد النوافذ)   */
 /* ══════════════════════════════════════════ */
-document.getElementById('welcome-screen').style.display = 'flex';
+
+// 1. مزامنة وضع الضيف (Local Storage) بين النوافذ اللحظية
+window.addEventListener('storage', function(e){
+  // إذا تم تغيير البيانات في نافذة أخرى وأنت في وضع الضيف
+  if(e.key === 'guestData' && isGuest){
+    try {
+      UD = JSON.parse(e.newValue);
+      ensureData();
+      fullRender(); // تحديث الشاشة بالبيانات الجديدة
+    } catch(err){}
+  }
+});
+
+// 2. مزامنة فايربيس عند العودة للنافذة (Visibility API)
+document.addEventListener("visibilitychange", async function() {
+  // إذا عاد المستخدم لهذه النافذة (أصبحت مرئية) وكان مسجلاً للدخول
+  if (document.visibilityState === "visible" && !isGuest && CU) {
+    try {
+      // جلب أحدث نسخة من قاعدة البيانات بصمت في الخلفية
+      const snap = await getDoc(doc(db, 'users', CU.uid));
+      if(snap.exists()) {
+        const serverData = snap.data();
+        // مقارنة بسيطة: إذا كانت البيانات على السيرفر مختلفة، قم بتحديث الشاشة
+        if(JSON.stringify(UD) !== JSON.stringify(serverData)){
+          UD = serverData;
+          ensureData();
+          fullRender();
+          console.log("تم مزامنة البيانات مع النافذة الأخرى.");
+        }
+      }
+    } catch(e) {
+      console.error("فشل المزامنة الخلفية:", e);
+    }
+  }
+});
+
+/* ══════════════════════════════════════════ */
+/* INITIAL STATE ON PAGE LOAD        */
+/* ══════════════════════════════════════════ */
 document.getElementById('auth-screen').style.display = 'none';
 document.getElementById('app').style.display = 'none';
 document.getElementById('load-ov').style.display = 'none';
+
+// التحقق مما إذا كان المستخدم ضيفاً قبل إظهار شاشة البداية
+if(localStorage.getItem('isGuestSession') === 'true'){
+  document.getElementById('welcome-screen').style.display = 'none';
+  enterGuest();
+} else {
+  document.getElementById('welcome-screen').style.display = 'flex';
+}
 
 </script>
 </body>
